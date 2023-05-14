@@ -4,5 +4,5 @@
 require "sorbet-runtime"
 require "zeitwerk"
 
-# Sorbet-aware namespace to super-charge your projects
+# Sorbet-aware implementation of the OpenFeature specification
 module OpenFeature; end

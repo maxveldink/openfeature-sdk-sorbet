@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Max VelDink"]
   spec.email = ["maxveldink@gmail.com"]
 
-  spec.summary = "Adds T::Result to sorbet-runtime, which is a basic, strongly-typed monad"
+  spec.summary = "Sorbet-aware implemention of the OpenFeature specification"
   spec.homepage = "https://github.com/maxveldink/openfeature-sdk-sorbet"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7"
