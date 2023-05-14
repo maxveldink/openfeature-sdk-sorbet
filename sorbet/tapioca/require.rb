@@ -3,6 +3,5 @@
 
 require "debug"
 require "minitest/autorun"
-require "openfeature/sdk"
 require "sorbet-runtime"
 require "zeitwerk"

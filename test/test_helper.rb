@@ -3,4 +3,4 @@
 
 require "minitest/autorun"
 require "debug"
-require "openfeature/sdk"
+require "open_feature"
