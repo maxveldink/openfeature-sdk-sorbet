@@ -1,0 +1,4 @@
+gem:
+  workers: 5
+dsl:
+  workers: 5
