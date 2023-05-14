@@ -26,3 +26,7 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    - lib/open_feature/no_op_provider.rb

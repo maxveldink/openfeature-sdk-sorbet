@@ -4,4 +4,5 @@
 require "debug"
 require "minitest/autorun"
 require "sorbet-runtime"
+require "sorbet-struct-comparable"
 require "zeitwerk"
