@@ -4,6 +4,8 @@
 module OpenFeature
   # Defines information about a Provider.
   class ProviderMetadata < T::Struct
+    include T::Struct::ActsAsComparable
+
     const :name, String
   end
 end
