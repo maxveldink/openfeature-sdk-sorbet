@@ -14,6 +14,22 @@ AllCops:
   Exclude:
     - sorbet/**/*.rbi
 
+Layout/LineLength:
+  Max: 120
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    - lib/open_feature/no_op_provider.rb
+
+Metrics/ClassLength:
+  Exclude:
+    - lib/open_feature/client.rb
+    - test/open_feature/client_test.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - test/open_feature/evaluation_details_test.rb
+
 Style/AccessorGrouping:
   Enabled: false
 
@@ -24,10 +40,3 @@ Style/StringLiterals:
 Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
-
-Layout/LineLength:
-  Max: 120
-
-Lint/UnusedMethodArgument:
-  Exclude:
-    - lib/open_feature/no_op_provider.rb
