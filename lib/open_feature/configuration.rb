@@ -22,6 +22,11 @@ module OpenFeature
       provider.metadata
     end
 
+    sig { params(provider: Provider).void }
+    def set_provider(provider) # rubocop:disable Naming/AccessorMethodName
+      @provider = provider
+    end
+
     private
 
     sig { returns(Provider) }
