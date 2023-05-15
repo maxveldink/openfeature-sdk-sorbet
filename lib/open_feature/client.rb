@@ -12,8 +12,9 @@ module OpenFeature
     sig { returns(T::Array[Hook]) }
     attr_reader :hooks
 
-    sig { params(name: T.nilable(String)).void }
-    def initialize(name: nil)
+    sig { params(provider: Provider, name: T.nilable(String)).void }
+    def initialize(provider:, name: nil)
+      @provider = provider
       @client_metadata = T.let(ClientMetadata.new(name: name), ClientMetadata)
       @hooks = T.let([], T::Array[Hook])
     end
@@ -22,5 +23,94 @@ module OpenFeature
     def add_hooks(hooks)
       @hooks.concat(Array(hooks))
     end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: T::Boolean,
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(T::Boolean)
+    end
+    def fetch_boolean_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: context).value
+    rescue StandardError
+      default_value
+    end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: String,
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(String)
+    end
+    def fetch_string_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_string_value(flag_key: flag_key, default_value: default_value, context: context).value
+    rescue StandardError
+      default_value
+    end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: Numeric,
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(Numeric)
+    end
+    def fetch_number_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value
+    rescue StandardError
+      default_value
+    end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: Integer,
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(Integer)
+    end
+    def fetch_integer_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value.to_i
+    rescue StandardError
+      default_value
+    end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: Float,
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(Float)
+    end
+    def fetch_float_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value.to_f
+    rescue StandardError
+      default_value
+    end
+
+    sig do
+      params(
+        flag_key: String,
+        default_value: T::Hash[T.untyped, T.untyped],
+        context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions)
+      ).returns(T::Hash[T.untyped, T.untyped])
+    end
+    def fetch_structure_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+      provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context).value
+    rescue StandardError
+      default_value
+    end
+
+    private
+
+    sig { returns(Provider) }
+    attr_reader :provider
   end
 end

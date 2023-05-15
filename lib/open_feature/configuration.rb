@@ -12,6 +12,9 @@ module OpenFeature
 
     include Singleton
 
+    sig { returns(Provider) }
+    attr_reader :provider
+
     sig { returns(T::Array[Hook]) }
     attr_reader :hooks
 
@@ -40,10 +43,5 @@ module OpenFeature
     def clear_hooks!
       @hooks = []
     end
-
-    private
-
-    sig { returns(Provider) }
-    attr_reader :provider
   end
 end

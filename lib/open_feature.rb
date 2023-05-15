@@ -29,7 +29,7 @@ module OpenFeature
 
     sig { params(name: T.nilable(String)).returns(Client) }
     def create_client(name: nil)
-      Client.new(name: name)
+      Client.new(provider: configuration.provider, name: name)
     end
 
     sig { returns(Configuration) }
