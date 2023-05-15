@@ -49,6 +49,49 @@ The OpenFeature specification defines [Structure as a potential return type](htt
 
 By default, this implementation sets the provider to the `OpenFeature::NoOpProvider` which always returns the default value. It's up to the individual teams to define their own providers based on their flag source (in the future, I'll release open-source providers based on various, common vendors).
 
+Thanks to Sorbet interfaces, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
+
+```ruby
+class JsonFileFlagProvider
+  extend T::Sig
+
+  include OpenFeature::Provider
+
+  sig { override.returns(OpenFeature::ProviderMetadata) }
+  def metadata
+    OpenFeature::ProviderMetadata.new(name: "Json File Flag Provider")
+  end
+
+  sig { override.returns(T::Array[Hook]) }
+  def hooks
+    []
+  end
+
+  sig do
+    override
+      .params(
+        flag_key: String,
+        default_value: T::Boolean,
+        context: T.nilable(EvaluationContext)
+      )
+      .returns(OpenFeature::ResolutionDetails[T::Boolean])
+  end
+  def resolve_boolean_value(flag_key:, default_value:, context: nil)
+    file_input = JSON.parse(File.read("flags.rb"))
+    value = file_input.fetch("flag_key", default_value)
+
+    OpenFeature::ResolutionDetails.new(
+      value: value,
+      # ... other optional fields
+    )
+  end
+
+  # ... other resolver methods
+end
+```
+
+By including the `OpenFeature::Provider` module, Sorbet will indicate what methods it's expecting and what their type signatures should be.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake` to run Rubocop and the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
