@@ -12,9 +12,13 @@ module OpenFeature
 
     include Singleton
 
+    sig { returns(T::Array[Hook]) }
+    attr_reader :hooks
+
     sig { void }
     def initialize
       @provider = T.let(NoOpProvider.new, Provider)
+      @hooks = T.let([], T::Array[Hook])
     end
 
     sig { returns(ProviderMetadata) }
@@ -25,6 +29,16 @@ module OpenFeature
     sig { params(provider: Provider).void }
     def set_provider(provider) # rubocop:disable Naming/AccessorMethodName
       @provider = provider
+    end
+
+    sig { params(hooks: T.any(Hook, T::Array[Hook])).void }
+    def add_hooks(hooks)
+      @hooks.concat(Array(hooks))
+    end
+
+    sig { void }
+    def clear_hooks!
+      @hooks = []
     end
 
     private

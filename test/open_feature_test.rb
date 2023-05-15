@@ -14,10 +14,15 @@ class OpenFeatureTest < Minitest::Test
   end
 
   def test_provider_can_be_set
-    assert_equal("No Op Provider", OpenFeature.provider_metadata.name)
-
     OpenFeature.set_provider(TestProvider.new)
 
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
+  end
+
+  def test_hooks_can_be_added
+    OpenFeature.add_hooks(OpenFeature::Hook.new)
+    OpenFeature.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+
+    assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
   end
 end

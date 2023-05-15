@@ -9,15 +9,29 @@ class ConfigurationTest < Minitest::Test
     ConfigurationHelper.reset!
   end
 
-  def test_provider_is_initialized_to_no_op
+  def test_configuration_is_initialized_properly
     assert_equal("No Op Provider", OpenFeature::Configuration.instance.provider_metadata.name)
+    assert_empty(OpenFeature::Configuration.instance.hooks)
   end
 
   def test_provider_can_be_set
-    assert_equal("No Op Provider", OpenFeature::Configuration.instance.provider_metadata.name)
-
     OpenFeature.set_provider(TestProvider.new)
 
     assert_equal("Test Provider", OpenFeature::Configuration.instance.provider_metadata.name)
+  end
+
+  def test_hooks_can_be_added
+    OpenFeature::Configuration.instance.add_hooks(OpenFeature::Hook.new)
+    OpenFeature::Configuration.instance.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+
+    assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
+  end
+
+  def test_hooks_can_be_cleared
+    OpenFeature::Configuration.instance.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+
+    OpenFeature::Configuration.instance.clear_hooks!
+
+    assert_empty(OpenFeature::Configuration.instance.hooks)
   end
 end
