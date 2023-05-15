@@ -9,6 +9,7 @@ group :development do
   gem "rake"
   gem "rubocop"
   gem "rubocop-minitest"
+  gem "rubocop-performance"
   gem "rubocop-rake"
   gem "rubocop-sorbet"
   gem "sorbet"
