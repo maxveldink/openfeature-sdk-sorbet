@@ -145,10 +145,10 @@ module OpenFeature
     sig do
       params(
         flag_key: String,
-        default_value: T::Hash[T.untyped, T.untyped],
+        default_value: Structure,
         context: T.nilable(EvaluationContext),
         options: T.nilable(EvaluationOptions)
-      ).returns(T::Hash[T.untyped, T.untyped])
+      ).returns(Structure)
     end
     def fetch_structure_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
       provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context).value
@@ -159,10 +159,10 @@ module OpenFeature
     sig do
       params(
         flag_key: String,
-        default_value: T::Hash[T.untyped, T.untyped],
+        default_value: Structure,
         context: T.nilable(EvaluationContext),
         options: T.nilable(EvaluationOptions)
-      ).returns(EvaluationDetails[T::Hash[T.untyped, T.untyped]])
+      ).returns(EvaluationDetails[Structure])
     end
     def fetch_structure_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
       details = provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context)
