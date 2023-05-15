@@ -25,4 +25,16 @@ class OpenFeatureTest < Minitest::Test
 
     assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
   end
+
+  def test_can_create_client_without_name
+    client = OpenFeature.create_client
+
+    assert_nil(client.client_metadata.name)
+  end
+
+  def test_can_create_client_with_name
+    client = OpenFeature.create_client(name: "test_client")
+
+    assert_equal("test_client", client.client_metadata.name)
+  end
 end

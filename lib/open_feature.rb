@@ -27,6 +27,11 @@ module OpenFeature
       configuration.add_hooks(hooks)
     end
 
+    sig { params(name: T.nilable(String)).returns(Client) }
+    def create_client(name: nil)
+      Client.new(client_metadata: ClientMetadata.new(name: name))
+    end
+
     sig { returns(Configuration) }
     def configuration
       Configuration.instance
