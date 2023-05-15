@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-05-15
+
+### Changed
+
+- Expanded type of structure resolver to `T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped])`
+
 ## [0.1.0] - 2023-05-15
 
 ### Added

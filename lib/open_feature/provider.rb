@@ -51,10 +51,10 @@ module OpenFeature
       abstract
         .params(
           flag_key: String,
-          default_value: T::Hash[T.untyped, T.untyped],
+          default_value: Structure,
           context: T.nilable(EvaluationContext)
         )
-        .returns(ResolutionDetails[T::Hash[T.untyped, T.untyped]])
+        .returns(ResolutionDetails[Structure])
     end
     def resolve_structure_value(flag_key:, default_value:, context: nil); end
   end

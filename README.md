@@ -43,7 +43,7 @@ structure_evaluation_details = client.fetch_structure_details(flag_key: "my_stru
 
 ### Note on `Structure`
 
-The OpenFeature specification defines [Structure as a potential return type](https://openfeature.dev/specification/types#structure). This is somewhat ambiguous in Ruby, further complicated by `T::Struct` that we get from Sorbet. For now, the type I've elected here is `T::Hash[T.untyped, T.untyped]` for flexibility but with a little more structure than a YML or JSON parsable string. This decision might change in the future upon further interpretation or new versions of the specification.
+The OpenFeature specification defines [Structure as a potential return type](https://openfeature.dev/specification/types#structure). This is somewhat ambiguous in Ruby, further complicated by `T::Struct` that we get from Sorbet. For now, the type I've elected here is `T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped]` (loosely, either an Array of untyped members or a Hash with untyped keys and untyped values) for flexibility but with a little more structure than a YML or JSON parsable string. This decision might change in the future upon further interpretation or new versions of the specification.
 
 ### Provider Interface
 
