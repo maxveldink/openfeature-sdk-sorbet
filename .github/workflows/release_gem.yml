@@ -26,8 +26,11 @@ jobs:
           git config user.email "maxveldink@gmail.com"
           git config user.name "Max VelDink"
           mkdir -p $HOME/.gem
-          printf "%s\n" "rubygems_api_key: ${{secrets.RUBY_GEMS_PUSH_API_KEY}}" > $HOME/.gem/credentials
+          touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        env:
+          GEM_HOST_API_KEY: "${{secrets.RUBY_GEMS_PUSH_API_KEY}}"
       - name: Install
         run: gem install gemsmith
       - name: Publish
