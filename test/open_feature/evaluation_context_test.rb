@@ -6,11 +6,11 @@ require "test_helper"
 class EvaluationContextTest < Minitest::Test
   def setup
     @evaluation_context_without_targeting_key = OpenFeature::EvaluationContext.new(
-      fields: { "testing" => "a value" }
+      fields: { "testing" => "a value", "something" => "different" }
     )
     @evaluation_context_with_targeting_key = OpenFeature::EvaluationContext.new(
       targeting_key: "abc",
-      fields: { "testing" => "a value" }
+      fields: { "testing" => "another value" }
     )
   end
 
@@ -31,15 +31,27 @@ class EvaluationContextTest < Minitest::Test
 
   def test_to_h_returns_hash_of_all_fields_without_targeting_key
     assert_equal(
-      { "testing" => "a value" },
+      { "testing" => "a value", "something" => "different" },
       @evaluation_context_without_targeting_key.to_h
     )
   end
 
   def test_to_h_returns_hash_of_all_fields_with_targeting_key
     assert_equal(
-      { "testing" => "a value", "targeting_key" => "abc" },
+      { "testing" => "another value", "targeting_key" => "abc" },
       @evaluation_context_with_targeting_key.to_h
+    )
+  end
+
+  def test_merge_overrides_values_with_given_context
+    new_context = @evaluation_context_without_targeting_key.merge(@evaluation_context_with_targeting_key)
+
+    assert_equal(
+      OpenFeature::EvaluationContext.new(
+        targeting_key: "abc",
+        fields: { "testing" => "another value", "something" => "different" }
+      ),
+      new_context
     )
   end
 end
