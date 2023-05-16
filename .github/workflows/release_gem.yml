@@ -8,8 +8,6 @@ jobs:
   release-gem:
     runs-on: ubuntu-latest
     needs: code_quality
-    container:
-      image: ruby:latest
     permissions:
       contents: write
 
