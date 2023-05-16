@@ -2,12 +2,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require_relative "support/configuration_helper"
 require_relative "support/test_provider"
 
 class OpenFeatureTest < Minitest::Test
   def teardown
-    ConfigurationHelper.reset!
+    OpenFeature.configuration.reset!
   end
 
   def test_returns_provider_metadata

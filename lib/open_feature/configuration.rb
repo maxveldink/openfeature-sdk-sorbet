@@ -34,8 +34,10 @@ module OpenFeature
     end
 
     sig { void }
-    def clear_hooks!
+    def reset!
+      @provider = OpenFeature::NoOpProvider.new
       @hooks = []
+      @evaluation_context = nil
     end
   end
 end
