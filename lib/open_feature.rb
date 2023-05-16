@@ -19,17 +19,17 @@ module OpenFeature
 
     sig { params(provider: Provider).void }
     def set_provider(provider) # rubocop:disable Naming/AccessorMethodName
-      configuration.set_provider(provider)
+      configuration.provider = provider
     end
 
     sig { params(context: EvaluationContext).void }
     def set_evaluation_context(context) # rubocop:disable Naming/AccessorMethodName
-      configuration.set_evaluation_context(context)
+      configuration.evaluation_context = context
     end
 
     sig { params(hooks: T.any(Hook, T::Array[Hook])).void }
     def add_hooks(hooks)
-      configuration.add_hooks(hooks)
+      configuration.hooks.concat(Array(hooks))
     end
 
     sig { params(name: T.nilable(String)).returns(Client) }

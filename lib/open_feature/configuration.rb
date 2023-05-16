@@ -13,13 +13,13 @@ module OpenFeature
     include Singleton
 
     sig { returns(Provider) }
-    attr_reader :provider
+    attr_accessor :provider
 
     sig { returns(T.nilable(EvaluationContext)) }
-    attr_reader :evaluation_context
+    attr_accessor :evaluation_context
 
     sig { returns(T::Array[Hook]) }
-    attr_reader :hooks
+    attr_accessor :hooks
 
     sig { void }
     def initialize
@@ -31,21 +31,6 @@ module OpenFeature
     sig { returns(ProviderMetadata) }
     def provider_metadata
       provider.metadata
-    end
-
-    sig { params(provider: Provider).void }
-    def set_provider(provider) # rubocop:disable Naming/AccessorMethodName
-      @provider = provider
-    end
-
-    sig { params(context: EvaluationContext).void }
-    def set_evaluation_context(context) # rubocop:disable Naming/AccessorMethodName
-      @evaluation_context = context
-    end
-
-    sig { params(hooks: T.any(Hook, T::Array[Hook])).void }
-    def add_hooks(hooks)
-      @hooks.concat(Array(hooks))
     end
 
     sig { void }

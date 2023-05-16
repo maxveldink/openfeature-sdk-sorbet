@@ -16,27 +16,8 @@ class ConfigurationTest < Minitest::Test
     assert_nil(OpenFeature::Configuration.instance.evaluation_context)
   end
 
-  def test_provider_can_be_set
-    OpenFeature::Configuration.instance.set_provider(TestProvider.new)
-
-    assert_equal("Test Provider", OpenFeature::Configuration.instance.provider_metadata.name)
-  end
-
-  def test_evaluation_context_can_be_set
-    OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new)
-
-    refute_nil(OpenFeature::Configuration.instance.evaluation_context)
-  end
-
-  def test_hooks_can_be_added
-    OpenFeature::Configuration.instance.add_hooks(OpenFeature::Hook.new)
-    OpenFeature::Configuration.instance.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
-
-    assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
-  end
-
   def test_hooks_can_be_cleared
-    OpenFeature::Configuration.instance.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+    OpenFeature::Configuration.instance.hooks = [OpenFeature::Hook.new, OpenFeature::Hook.new]
 
     OpenFeature::Configuration.instance.clear_hooks!
 
