@@ -17,6 +17,10 @@ jobs:
         with:
           fetch-depth: '0'
           ref: ${{github.head_ref}}
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
       - name: Setup
         run: |
           git config user.email "maxveldink@gmail.com"
