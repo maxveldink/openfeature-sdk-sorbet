@@ -9,6 +9,9 @@ module OpenFeature
     sig { returns(ClientMetadata) }
     attr_reader :client_metadata
 
+    sig { returns(T.nilable(EvaluationContext)) }
+    attr_accessor :evaluation_context
+
     sig { returns(T::Array[Hook]) }
     attr_reader :hooks
 
@@ -16,6 +19,7 @@ module OpenFeature
     def initialize(provider:, name: nil)
       @provider = provider
       @client_metadata = T.let(ClientMetadata.new(name: name), ClientMetadata)
+      @evaluation_context = T.let(nil, T.nilable(EvaluationContext))
       @hooks = T.let([], T::Array[Hook])
     end
 

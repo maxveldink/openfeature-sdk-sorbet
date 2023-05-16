@@ -13,6 +13,7 @@ class ClientTest < Minitest::Test
 
   def test_is_initialized_properly
     assert_equal("testing", @client.client_metadata.name)
+    assert_nil(@client.evaluation_context)
     assert_empty(@client.hooks)
   end
 
