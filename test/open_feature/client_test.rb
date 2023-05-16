@@ -1,6 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
+require "test_helper"
 require_relative "../support/test_provider"
 
 class ClientTest < Minitest::Test

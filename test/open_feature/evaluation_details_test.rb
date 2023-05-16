@@ -1,6 +1,8 @@
 # typed: true
 # frozen_string_literal: true
 
+require "test_helper"
+
 class EvaluationDetailsTest < Minitest::Test
   def test_from_resolution_details_builds_evaluation_details
     resolution_details = OpenFeature::ResolutionDetails.new(

@@ -1,6 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
+require "test_helper"
 require_relative "../support/configuration_helper"
 require_relative "../support/test_provider"
 

@@ -19,16 +19,20 @@ Layout/LineLength:
 
 Lint/UnusedMethodArgument:
   Exclude:
+    - lib/open_feature/multiple_source_provider.rb
     - lib/open_feature/no_op_provider.rb
 
 Metrics/ClassLength:
   Exclude:
     - lib/open_feature/client.rb
     - test/open_feature/client_test.rb
+    - test/open_feature/multiple_source_provider_test.rb
 
 Metrics/MethodLength:
   Exclude:
     - test/open_feature/evaluation_details_test.rb
+    - test/open_feature/multiple_source_provider_test.rb
+    - test/support/test_provider.rb
 
 Style/AccessorGrouping:
   Enabled: false
