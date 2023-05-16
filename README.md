@@ -49,6 +49,21 @@ The OpenFeature specification defines [Structure as a potential return type](htt
 
 By default, this implementation sets the provider to the `OpenFeature::NoOpProvider` which always returns the default value. It's up to the individual teams to define their own providers based on their flag source (in the future, I'll release open-source providers based on various, common vendors).
 
+This gem also provides `OpenFeature::MultipleSourceProvider` to allow fetching flags from multiple sources. This is especially useful if your existing application has flags spread across bespoke and vendor solutions and you want to unify the evaluation sites. It can be instantiated and configured like so:
+
+```ruby
+provider = OpenFeature::MultipleSourceProvider.new(
+  providers: [
+    CustomProvider.new,
+    OpenFeature::NoOpProvider.new
+  ]
+)
+
+OpenFeature.set_provider(provider)
+```
+
+#### Implementing Custom Providers
+
 Thanks to Sorbet interfaces, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
 
 ```ruby
