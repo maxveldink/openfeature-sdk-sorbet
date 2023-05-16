@@ -22,6 +22,11 @@ module OpenFeature
       configuration.set_provider(provider)
     end
 
+    sig { params(context: EvaluationContext).void }
+    def set_evaluation_context(context) # rubocop:disable Naming/AccessorMethodName
+      configuration.set_evaluation_context(context)
+    end
+
     sig { params(hooks: T.any(Hook, T::Array[Hook])).void }
     def add_hooks(hooks)
       configuration.add_hooks(hooks)

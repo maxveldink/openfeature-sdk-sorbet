@@ -20,6 +20,12 @@ class OpenFeatureTest < Minitest::Test
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
   end
 
+  def test_evaluation_context_can_be_set
+    OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new)
+
+    refute_nil(OpenFeature.configuration.evaluation_context)
+  end
+
   def test_hooks_can_be_added
     OpenFeature.add_hooks(OpenFeature::Hook.new)
     OpenFeature.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
