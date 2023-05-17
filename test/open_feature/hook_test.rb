@@ -25,6 +25,24 @@ class HookTest < Minitest::Test
     assert_equal(result, hook_context.evaluation_context.merge(hook_return_context))
   end
 
+  # See https://openfeature.dev/specification/sections/hooks#42-hook-hints
+  # TODO: Answer what hook hints are for?
+  def test_single_hook_is_called_with_hook_hints
+    hook = TestHook.new mock: Minitest::Mock.new
+    hook_context = OpenFeature::HookContext.new(flag_key: "",
+                                                flag_type: "",
+                                                evaluation_context: OpenFeature::EvaluationContext.new(
+                                                  targeting_key: nil
+                                                ),
+                                                default_value: "")
+
+    hook_return_context = OpenFeature::EvaluationContext.new(targeting_key: nil)
+    hints = { "xhint" => "yvalue" }
+    hook.mock.expect(:call, hook_return_context, [[hook_context, hints]])
+    OpenFeature::Hook::BeforeHook.call(hooks: [hook], context: hook_context, hints: hints)
+    hook.mock.verify
+  end
+
   # See requirement 4.3.3, 4.3.4
   #
   # rubocop: disable Metrics/AbcSize
