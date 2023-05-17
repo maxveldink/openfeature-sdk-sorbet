@@ -17,7 +17,7 @@ class TestProvider
   end
 
   def hooks
-    [OpenFeature::Hook.new]
+    [TestHook.new]
   end
 
   def resolve_boolean_value(**_)

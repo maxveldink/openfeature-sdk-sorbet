@@ -3,6 +3,7 @@
 
 require "test_helper"
 require_relative "support/test_provider"
+require_relative "support/test_hook"
 
 class OpenFeatureTest < Minitest::Test
   def teardown
@@ -26,8 +27,8 @@ class OpenFeatureTest < Minitest::Test
   end
 
   def test_hooks_can_be_added
-    OpenFeature.add_hooks(OpenFeature::Hook.new)
-    OpenFeature.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+    OpenFeature.add_hooks(TestHook.new)
+    OpenFeature.add_hooks([TestHook.new, TestHook.new])
 
     assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
   end
@@ -44,7 +45,7 @@ class OpenFeatureTest < Minitest::Test
     client = OpenFeature.create_client(
       name: "test_client",
       evaluation_context: OpenFeature::EvaluationContext.new,
-      hooks: OpenFeature::Hook.new
+      hooks: TestHook.new
     )
 
     assert_equal("test_client", client.client_metadata.name)

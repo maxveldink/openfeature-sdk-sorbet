@@ -3,6 +3,7 @@
 
 require "test_helper"
 require_relative "../support/test_provider"
+require_relative "../support/test_hook"
 
 class ClientTest < Minitest::Test
   def setup
@@ -24,7 +25,7 @@ class ClientTest < Minitest::Test
       provider: TestProvider.new,
       name: "testing",
       evaluation_context: OpenFeature::EvaluationContext.new,
-      hooks: [OpenFeature::Hook.new]
+      hooks: [TestHook.new]
     )
 
     refute_nil(client.client_metadata.name)
@@ -33,8 +34,8 @@ class ClientTest < Minitest::Test
   end
 
   def test_hooks_can_be_added
-    @client.add_hooks(OpenFeature::Hook.new)
-    @client.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+    @client.add_hooks(TestHook.new)
+    @client.add_hooks([TestHook.new, TestHook.new])
 
     assert_equal(3, @client.hooks.size)
   end
