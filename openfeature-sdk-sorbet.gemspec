@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "openfeature-sdk-sorbet"
-  spec.version = "0.1.2"
+  spec.version = "0.2.0"
   spec.authors = ["Max VelDink"]
   spec.email = ["maxveldink@gmail.com"]
 
