@@ -32,15 +32,23 @@ class OpenFeatureTest < Minitest::Test
     assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
   end
 
-  def test_can_create_client_without_name
+  def test_can_create_client_without_arguments
     client = OpenFeature.create_client
 
     assert_nil(client.client_metadata.name)
+    assert_nil(client.evaluation_context)
+    assert_empty(client.hooks)
   end
 
-  def test_can_create_client_with_name
-    client = OpenFeature.create_client(name: "test_client")
+  def test_can_create_client_with_arguments
+    client = OpenFeature.create_client(
+      name: "test_client",
+      evaluation_context: OpenFeature::EvaluationContext.new,
+      hooks: OpenFeature::Hook.new
+    )
 
     assert_equal("test_client", client.client_metadata.name)
+    refute_nil(client.evaluation_context)
+    refute_empty(client.hooks)
   end
 end

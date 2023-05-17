@@ -15,12 +15,19 @@ module OpenFeature
     sig { returns(T::Array[Hook]) }
     attr_reader :hooks
 
-    sig { params(provider: Provider, name: T.nilable(String)).void }
-    def initialize(provider:, name: nil)
+    sig do
+      params(
+        provider: Provider,
+        name: T.nilable(String),
+        evaluation_context: T.nilable(EvaluationContext),
+        hooks: T::Array[Hook]
+      ).void
+    end
+    def initialize(provider:, name: nil, evaluation_context: nil, hooks: [])
       @provider = provider
       @client_metadata = T.let(ClientMetadata.new(name: name), ClientMetadata)
-      @evaluation_context = T.let(nil, T.nilable(EvaluationContext))
-      @hooks = T.let([], T::Array[Hook])
+      @evaluation_context = evaluation_context
+      @hooks = hooks
     end
 
     sig { params(hooks: T.any(Hook, T::Array[Hook])).void }

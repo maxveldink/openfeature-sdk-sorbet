@@ -32,9 +32,20 @@ module OpenFeature
       configuration.hooks.concat(Array(hooks))
     end
 
-    sig { params(name: T.nilable(String)).returns(Client) }
-    def create_client(name: nil)
-      Client.new(provider: configuration.provider, name: name)
+    sig do
+      params(
+        name: T.nilable(String),
+        evaluation_context: T.nilable(EvaluationContext),
+        hooks: T.nilable(T.any(Hook, T::Array[Hook]))
+      ).returns(Client)
+    end
+    def create_client(name: nil, evaluation_context: nil, hooks: nil)
+      Client.new(
+        provider: configuration.provider,
+        name: name,
+        evaluation_context: evaluation_context,
+        hooks: Array(hooks)
+      )
     end
 
     sig { returns(Configuration) }

@@ -11,10 +11,25 @@ class ClientTest < Minitest::Test
     @integer_client = OpenFeature::Client.new(provider: TestProvider.new(number_value: 2))
   end
 
-  def test_is_initialized_properly
-    assert_equal("testing", @client.client_metadata.name)
-    assert_nil(@client.evaluation_context)
-    assert_empty(@client.hooks)
+  def test_is_initialized_properly_with_defaults
+    client = OpenFeature::Client.new(provider: TestProvider.new)
+
+    assert_nil(client.client_metadata.name)
+    assert_nil(client.evaluation_context)
+    assert_empty(client.hooks)
+  end
+
+  def test_values_can_be_provided_during_initialization
+    client = OpenFeature::Client.new(
+      provider: TestProvider.new,
+      name: "testing",
+      evaluation_context: OpenFeature::EvaluationContext.new,
+      hooks: [OpenFeature::Hook.new]
+    )
+
+    refute_nil(client.client_metadata.name)
+    refute_nil(client.evaluation_context)
+    refute_empty(client.hooks)
   end
 
   def test_hooks_can_be_added
