@@ -26,9 +26,10 @@ require "open_feature"
 # Configure global API properties
 
 OpenFeature.set_provider(OpenFeature::NoOpProvider.new)
+OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new(fields: { "globally" => "available" }))
 OpenFeature.add_hooks([OpenFeature::Hook.new]) # experimental, not fully supported
 
-client = OpenFeature.create_client
+client = OpenFeature.create_client(evaluation_context: OpenFeature::EvaluationContext.new(fields: { "client" => "available" }))
 
 # Fetch boolean value
 # Also methods available for String, Number, Integer, Float and Structure (Hash)
@@ -37,6 +38,9 @@ bool_value = client.fetch_boolean_value(flag_key: "my_toggle", default_value: fa
 # Sorbet sprinkles in type safety
 bool_value = client.fetch_boolean_value(flag_key: "my_toggle", default_value: "bad!") # => raises TypeError from Sorbet, invalid default value
 
+# Additional evaluation context can be provided during invocation
+number_value = client.fetch_number_value(flag_key: "my_toggle", default_value: 1, context: OpenFeature::EvaluationContext.new(fields: { "only_this_call_site" => 10 })) # => merges client and global context
+
 # Fetch structure evaluation details
 structure_evaluation_details = client.fetch_structure_details(flag_key: "my_structure", default_value: { "a" => "fallback" }) # => EvaluationDetails(value: Hash, flag_key: "my_structure", ...)
 ```
@@ -44,6 +48,10 @@ structure_evaluation_details = client.fetch_structure_details(flag_key: "my_stru
 ### Note on `Structure`
 
 The OpenFeature specification defines [Structure as a potential return type](https://openfeature.dev/specification/types#structure). This is somewhat ambiguous in Ruby, further complicated by `T::Struct` that we get from Sorbet. For now, the type I've elected here is `T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped]` (loosely, either an Array of untyped members or a Hash with untyped keys and untyped values) for flexibility but with a little more structure than a YML or JSON parsable string. This decision might change in the future upon further interpretation or new versions of the specification.
+
+### Evaluation Context
+
+We support global evaluation context (set on the `OpenFeature` module), client evaluation context (set on client instances or during client initialization) and invocation evaluation context (passed in during flag evaluation). In compliance with the specification, the invocation context merges into the client context which merges into the global context. Fields in invocation context take precedence over fields in the client context which take precedence over fields in the global context.
 
 ### Provider Interface
 
