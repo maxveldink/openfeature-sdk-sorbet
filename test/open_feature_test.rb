@@ -2,12 +2,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require_relative "support/configuration_helper"
 require_relative "support/test_provider"
 
 class OpenFeatureTest < Minitest::Test
   def teardown
-    ConfigurationHelper.reset!
+    OpenFeature.configuration.reset!
   end
 
   def test_returns_provider_metadata
@@ -20,6 +19,12 @@ class OpenFeatureTest < Minitest::Test
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
   end
 
+  def test_evaluation_context_can_be_set
+    OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new)
+
+    refute_nil(OpenFeature.configuration.evaluation_context)
+  end
+
   def test_hooks_can_be_added
     OpenFeature.add_hooks(OpenFeature::Hook.new)
     OpenFeature.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
@@ -27,15 +32,23 @@ class OpenFeatureTest < Minitest::Test
     assert_equal(3, OpenFeature::Configuration.instance.hooks.size)
   end
 
-  def test_can_create_client_without_name
+  def test_can_create_client_without_arguments
     client = OpenFeature.create_client
 
     assert_nil(client.client_metadata.name)
+    assert_nil(client.evaluation_context)
+    assert_empty(client.hooks)
   end
 
-  def test_can_create_client_with_name
-    client = OpenFeature.create_client(name: "test_client")
+  def test_can_create_client_with_arguments
+    client = OpenFeature.create_client(
+      name: "test_client",
+      evaluation_context: OpenFeature::EvaluationContext.new,
+      hooks: OpenFeature::Hook.new
+    )
 
     assert_equal("test_client", client.client_metadata.name)
+    refute_nil(client.evaluation_context)
+    refute_empty(client.hooks)
   end
 end

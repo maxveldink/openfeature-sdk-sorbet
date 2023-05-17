@@ -9,14 +9,25 @@ module OpenFeature
     sig { returns(ClientMetadata) }
     attr_reader :client_metadata
 
+    sig { returns(T.nilable(EvaluationContext)) }
+    attr_accessor :evaluation_context
+
     sig { returns(T::Array[Hook]) }
     attr_reader :hooks
 
-    sig { params(provider: Provider, name: T.nilable(String)).void }
-    def initialize(provider:, name: nil)
+    sig do
+      params(
+        provider: Provider,
+        name: T.nilable(String),
+        evaluation_context: T.nilable(EvaluationContext),
+        hooks: T::Array[Hook]
+      ).void
+    end
+    def initialize(provider:, name: nil, evaluation_context: nil, hooks: [])
       @provider = provider
       @client_metadata = T.let(ClientMetadata.new(name: name), ClientMetadata)
-      @hooks = T.let([], T::Array[Hook])
+      @evaluation_context = evaluation_context
+      @hooks = hooks
     end
 
     sig { params(hooks: T.any(Hook, T::Array[Hook])).void }
@@ -33,7 +44,9 @@ module OpenFeature
       ).returns(T::Boolean)
     end
     def fetch_boolean_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: context).value
+      provider
+        .resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
     rescue StandardError
       default_value
     end
@@ -47,7 +60,11 @@ module OpenFeature
       ).returns(EvaluationDetails[T::Boolean])
     end
     def fetch_boolean_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      details = provider.resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: context)
+      details = provider.resolve_boolean_value(
+        flag_key: flag_key,
+        default_value: default_value,
+        context: build_context(context)
+      )
 
       EvaluationDetails.from_resolution_details(details, flag_key: flag_key)
     rescue StandardError => e
@@ -63,7 +80,9 @@ module OpenFeature
       ).returns(String)
     end
     def fetch_string_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_string_value(flag_key: flag_key, default_value: default_value, context: context).value
+      provider
+        .resolve_string_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
     rescue StandardError
       default_value
     end
@@ -77,7 +96,11 @@ module OpenFeature
       ).returns(EvaluationDetails[String])
     end
     def fetch_string_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      details = provider.resolve_string_value(flag_key: flag_key, default_value: default_value, context: context)
+      details = provider.resolve_string_value(
+        flag_key: flag_key,
+        default_value: default_value,
+        context: build_context(context)
+      )
 
       EvaluationDetails.from_resolution_details(details, flag_key: flag_key)
     rescue StandardError => e
@@ -93,7 +116,9 @@ module OpenFeature
       ).returns(Numeric)
     end
     def fetch_number_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value
+      provider
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
     rescue StandardError
       default_value
     end
@@ -107,7 +132,11 @@ module OpenFeature
       ).returns(EvaluationDetails[Numeric])
     end
     def fetch_number_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      details = provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context)
+      details = provider.resolve_number_value(
+        flag_key: flag_key,
+        default_value: default_value,
+        context: build_context(context)
+      )
 
       EvaluationDetails.from_resolution_details(details, flag_key: flag_key)
     rescue StandardError => e
@@ -123,7 +152,10 @@ module OpenFeature
       ).returns(Integer)
     end
     def fetch_integer_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value.to_i
+      provider
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
+        .to_i
     rescue StandardError
       default_value
     end
@@ -137,7 +169,10 @@ module OpenFeature
       ).returns(Float)
     end
     def fetch_float_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context).value.to_f
+      provider
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
+        .to_f
     rescue StandardError
       default_value
     end
@@ -151,7 +186,9 @@ module OpenFeature
       ).returns(Structure)
     end
     def fetch_structure_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context).value
+      provider
+        .resolve_structure_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .value
     rescue StandardError
       default_value
     end
@@ -165,7 +202,11 @@ module OpenFeature
       ).returns(EvaluationDetails[Structure])
     end
     def fetch_structure_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      details = provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context)
+      details = provider.resolve_structure_value(
+        flag_key: flag_key,
+        default_value: default_value,
+        context: build_context(context)
+      )
 
       EvaluationDetails.from_resolution_details(details, flag_key: flag_key)
     rescue StandardError => e
@@ -176,5 +217,14 @@ module OpenFeature
 
     sig { returns(Provider) }
     attr_reader :provider
+
+    sig { params(invocation_context: T.nilable(EvaluationContext)).returns(T.nilable(EvaluationContext)) }
+    def build_context(invocation_context)
+      EvaluationContextBuilder.new.call(
+        global_context: OpenFeature.configuration.evaluation_context,
+        client_context: evaluation_context,
+        invocation_context: invocation_context
+      )
+    end
   end
 end

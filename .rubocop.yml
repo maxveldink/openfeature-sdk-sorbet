@@ -30,9 +30,7 @@ Metrics/ClassLength:
 
 Metrics/MethodLength:
   Exclude:
-    - test/open_feature/evaluation_details_test.rb
-    - test/open_feature/multiple_source_provider_test.rb
-    - test/support/test_provider.rb
+    - test/**/*
 
 Style/AccessorGrouping:
   Enabled: false
