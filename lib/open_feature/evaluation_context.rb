@@ -13,7 +13,7 @@ module OpenFeature
 
     FieldValueType = T.type_alias { T.any(T::Boolean, String, Numeric, DateTime, Structure) }
 
-    const :targeting_key, T.nilable(String)
+    const :targeting_key, T.nilable(String), default: nil
     const :fields, T::Hash[String, FieldValueType], default: {}
 
     sig { params(method_name: Symbol).returns(T::Boolean) }

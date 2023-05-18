@@ -215,4 +215,83 @@ class ClientTest < Minitest::Test
 
     assert_equal(expected_details, details)
   end
+
+  def test_fetch_boolean_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "Boolean",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: false)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_boolean_value(flag_key: "testing", default_value: false, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_string_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "String",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: "foo")
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_string_value(flag_key: "testing", default_value: "foo", options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_integer_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "Integer",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: 43)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_integer_value(flag_key: "testing", default_value: 43, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_number_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "Number",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: 3.14)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_number_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_float_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "Float",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: 3.14)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_float_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_structure_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
+                                                         flag_type: "Structure",
+                                                         evaluation_context: OpenFeature::EvaluationContext.new,
+                                                         default_value: { "another" => "test" })
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_structure_value(flag_key: "testing", default_value: { "another" => "test" },
+                                  options: OpenFeature::EvaluationOptions.new(
+                                    hooks: [hook]
+                                  ))
+    hook.mock.verify
+  end
 end
