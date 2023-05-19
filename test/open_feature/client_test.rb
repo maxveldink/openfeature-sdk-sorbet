@@ -7,7 +7,8 @@ require_relative "../support/test_hook"
 
 class ClientTest < Minitest::Test
   def setup
-    @client = OpenFeature::Client.new(provider: TestProvider.new, name: "testing")
+    @client_provider = TestProvider.new
+    @client = OpenFeature::Client.new(provider: @client_provider, name: "testing")
     @raising_client = OpenFeature::Client.new(provider: TestProvider.new(raising: true))
     @integer_client = OpenFeature::Client.new(provider: TestProvider.new(number_value: 2))
   end
@@ -218,10 +219,7 @@ class ClientTest < Minitest::Test
 
   def test_fetch_boolean_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "Boolean",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: false)
+    expected_hook_context = build_test_hook_context(flag_type: "Boolean", default_value: false)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_boolean_value(flag_key: "testing", default_value: false, options: OpenFeature::EvaluationOptions.new(
       hooks: [hook]
@@ -231,10 +229,7 @@ class ClientTest < Minitest::Test
 
   def test_fetch_string_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "String",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: "foo")
+    expected_hook_context = build_test_hook_context(flag_type: "String", default_value: "foo")
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_string_value(flag_key: "testing", default_value: "foo", options: OpenFeature::EvaluationOptions.new(
       hooks: [hook]
@@ -244,10 +239,7 @@ class ClientTest < Minitest::Test
 
   def test_fetch_integer_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "Integer",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: 43)
+    expected_hook_context = build_test_hook_context(flag_type: "Integer", default_value: 43)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_integer_value(flag_key: "testing", default_value: 43, options: OpenFeature::EvaluationOptions.new(
       hooks: [hook]
@@ -257,10 +249,7 @@ class ClientTest < Minitest::Test
 
   def test_fetch_number_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "Number",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: 3.14)
+    expected_hook_context = build_test_hook_context(flag_type: "Number", default_value: 3.14)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_number_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
       hooks: [hook]
@@ -270,10 +259,7 @@ class ClientTest < Minitest::Test
 
   def test_fetch_float_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "Float",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: 3.14)
+    expected_hook_context = build_test_hook_context(flag_type: "Float", default_value: 3.14)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_float_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
       hooks: [hook]
@@ -283,15 +269,23 @@ class ClientTest < Minitest::Test
 
   def test_fetch_structure_value_invokes_before_hook
     hook = TestHook.new mock: Minitest::Mock.new
-    expected_hook_context = OpenFeature::HookContext.new(flag_key: "testing",
-                                                         flag_type: "Structure",
-                                                         evaluation_context: OpenFeature::EvaluationContext.new,
-                                                         default_value: { "another" => "test" })
+    expected_hook_context = build_test_hook_context(flag_type: "Structure", default_value: { "another" => "test" })
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_structure_value(flag_key: "testing", default_value: { "another" => "test" },
                                   options: OpenFeature::EvaluationOptions.new(
                                     hooks: [hook]
                                   ))
     hook.mock.verify
+  end
+
+  private
+
+  def build_test_hook_context(flag_type:, default_value:)
+    OpenFeature::HookContext.new(flag_key: "testing",
+                                 flag_type: flag_type,
+                                 evaluation_context: OpenFeature::EvaluationContext.new,
+                                 default_value: default_value,
+                                 client_metadata: @client.client_metadata,
+                                 provider_metadata: @client_provider.metadata)
   end
 end

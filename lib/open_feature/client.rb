@@ -247,7 +247,8 @@ module OpenFeature
     def build_context_with_before_hooks(flag_key:, default_value:, invocation_context:, options:, flag_type:)
       evaluation_context = build_context(invocation_context) || OpenFeature::EvaluationContext.new
       hook_context = HookContext.new(flag_key: flag_key, default_value: default_value,
-                                     evaluation_context: evaluation_context, flag_type: flag_type)
+                                     evaluation_context: evaluation_context, flag_type: flag_type,
+                                     client_metadata: client_metadata, provider_metadata: provider.metadata)
       OpenFeature::Hook::BeforeHook.call(hooks: sequence_before_hooks(options), context: hook_context,
                                          hints: {})
     end

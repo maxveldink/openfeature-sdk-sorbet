@@ -8,14 +8,7 @@ class HookTest < Minitest::Test
   # See Requirement 4.3.4
   def test_single_before_hook_is_called_and_updates_evaluation_context
     hook = TestHook.new mock: Minitest::Mock.new
-    hook_context = OpenFeature::HookContext.new(flag_key: "",
-                                                flag_type: "",
-                                                evaluation_context: OpenFeature::EvaluationContext.new(
-                                                  targeting_key: nil,
-                                                  fields: { "k1" => "v1" }
-                                                ),
-                                                default_value: "")
-
+    hook_context = build_test_hook_context(fields: { "k1" => "v1" })
     hook_return_context = OpenFeature::EvaluationContext.new(targeting_key: "foo",
                                                              fields:
                                                                { "k2" => "v2" })
@@ -29,13 +22,7 @@ class HookTest < Minitest::Test
   # TODO: Answer what hook hints are for?
   def test_single_hook_is_called_with_hook_hints
     hook = TestHook.new mock: Minitest::Mock.new
-    hook_context = OpenFeature::HookContext.new(flag_key: "",
-                                                flag_type: "",
-                                                evaluation_context: OpenFeature::EvaluationContext.new(
-                                                  targeting_key: nil
-                                                ),
-                                                default_value: "")
-
+    hook_context = build_test_hook_context
     hook_return_context = OpenFeature::EvaluationContext.new(targeting_key: nil)
     hints = { "xhint" => "yvalue" }
     hook.mock.expect(:call, hook_return_context, [[hook_context, hints]])
@@ -49,19 +36,10 @@ class HookTest < Minitest::Test
   def test_multiple_before_hook_works
     hooks = (0..5).map { |_| TestHook.new mock: Minitest::Mock.new }
 
-    initial_hook_context = OpenFeature::HookContext.new(flag_key: "", flag_type: "",
-                                                        evaluation_context: OpenFeature::EvaluationContext.new(
-                                                          targeting_key: "-1"
-                                                        ),
-                                                        default_value: "")
+    initial_hook_context = build_test_hook_context(targeting_key: "-1")
 
     hooks.each_with_index.map do |hook, index|
-      last_context = OpenFeature::HookContext.new(flag_key: initial_hook_context.flag_key,
-                                                  flag_type: initial_hook_context.flag_type,
-                                                  evaluation_context: OpenFeature::EvaluationContext.new(
-                                                    targeting_key: (index - 1).to_s
-                                                  ),
-                                                  default_value: initial_hook_context.default_value)
+      last_context = build_test_hook_context(targeting_key: (index - 1).to_s)
       hook.mock.expect(:call, OpenFeature::EvaluationContext.new(targeting_key: index.to_s), [[last_context, {}]])
     end
 
@@ -70,4 +48,18 @@ class HookTest < Minitest::Test
     assert_equal(result, OpenFeature::EvaluationContext.new(targeting_key: (hooks.length - 1).to_s))
   end
   # rubocop: enable Metrics/AbcSize
+
+  private
+
+  def build_test_hook_context(targeting_key: nil, fields: {})
+    OpenFeature::HookContext.new(flag_key: "test",
+                                 flag_type: "String",
+                                 evaluation_context: OpenFeature::EvaluationContext.new(
+                                   targeting_key: targeting_key,
+                                   fields: fields
+                                 ),
+                                 default_value: "",
+                                 client_metadata: OpenFeature::ClientMetadata.new,
+                                 provider_metadata: OpenFeature::ProviderMetadata.new(name: "test0"))
+  end
 end
