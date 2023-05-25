@@ -3,10 +3,12 @@
 
 require "test_helper"
 require_relative "../support/test_provider"
+require_relative "../support/test_hook"
 
 class ClientTest < Minitest::Test
   def setup
-    @client = OpenFeature::Client.new(provider: TestProvider.new, name: "testing")
+    @client_provider = TestProvider.new
+    @client = OpenFeature::Client.new(provider: @client_provider, name: "testing")
     @raising_client = OpenFeature::Client.new(provider: TestProvider.new(raising: true))
     @integer_client = OpenFeature::Client.new(provider: TestProvider.new(number_value: 2))
   end
@@ -24,7 +26,7 @@ class ClientTest < Minitest::Test
       provider: TestProvider.new,
       name: "testing",
       evaluation_context: OpenFeature::EvaluationContext.new,
-      hooks: [OpenFeature::Hook.new]
+      hooks: [TestHook.new]
     )
 
     refute_nil(client.client_metadata.name)
@@ -33,8 +35,8 @@ class ClientTest < Minitest::Test
   end
 
   def test_hooks_can_be_added
-    @client.add_hooks(OpenFeature::Hook.new)
-    @client.add_hooks([OpenFeature::Hook.new, OpenFeature::Hook.new])
+    @client.add_hooks(TestHook.new)
+    @client.add_hooks([TestHook.new, TestHook.new])
 
     assert_equal(3, @client.hooks.size)
   end
@@ -213,5 +215,77 @@ class ClientTest < Minitest::Test
     details = @raising_client.fetch_structure_details(flag_key: "testing", default_value: { "another" => "test" })
 
     assert_equal(expected_details, details)
+  end
+
+  def test_fetch_boolean_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "Boolean", default_value: false)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_boolean_value(flag_key: "testing", default_value: false, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_string_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "String", default_value: "foo")
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_string_value(flag_key: "testing", default_value: "foo", options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_integer_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "Integer", default_value: 43)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_integer_value(flag_key: "testing", default_value: 43, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_number_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "Number", default_value: 3.14)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_number_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_float_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "Float", default_value: 3.14)
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_float_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+      hooks: [hook]
+    ))
+    hook.mock.verify
+  end
+
+  def test_fetch_structure_value_invokes_before_hook
+    hook = TestHook.new mock: Minitest::Mock.new
+    expected_hook_context = build_test_hook_context(flag_type: "Structure", default_value: { "another" => "test" })
+    hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
+    @client.fetch_structure_value(flag_key: "testing", default_value: { "another" => "test" },
+                                  options: OpenFeature::EvaluationOptions.new(
+                                    hooks: [hook]
+                                  ))
+    hook.mock.verify
+  end
+
+  private
+
+  def build_test_hook_context(flag_type:, default_value:)
+    OpenFeature::HookContext.new(flag_key: "testing",
+                                 flag_type: flag_type,
+                                 evaluation_context: OpenFeature::EvaluationContext.new,
+                                 default_value: default_value,
+                                 client_metadata: @client.client_metadata,
+                                 provider_metadata: @client_provider.metadata)
   end
 end

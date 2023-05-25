@@ -3,6 +3,7 @@
 
 require "test_helper"
 require_relative "../support/test_provider"
+require_relative "../support/test_hook"
 
 class ConfigurationTest < Minitest::Test
   def teardown
@@ -18,7 +19,7 @@ class ConfigurationTest < Minitest::Test
   # rubocop:disable Metrics/AbcSize, Minitest/MultipleAssertions
   def test_configuration_can_be_reset
     OpenFeature::Configuration.instance.provider = TestProvider.new
-    OpenFeature::Configuration.instance.hooks = [OpenFeature::Hook.new, OpenFeature::Hook.new]
+    OpenFeature::Configuration.instance.hooks = [TestHook.new, TestHook.new]
     OpenFeature::Configuration.instance.evaluation_context = OpenFeature::EvaluationContext.new
 
     assert_equal("Test Provider", OpenFeature::Configuration.instance.provider_metadata.name)

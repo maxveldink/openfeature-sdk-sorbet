@@ -43,10 +43,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(T::Boolean)
     end
-    def fetch_boolean_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
-      provider
-        .resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
-        .value
+    def fetch_boolean_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "Boolean")
+      provider.resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
+              .value
     rescue StandardError
       default_value
     end
@@ -79,9 +81,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(String)
     end
-    def fetch_string_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_string_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "String")
       provider
-        .resolve_string_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .resolve_string_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
         .value
     rescue StandardError
       default_value
@@ -115,9 +120,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(Numeric)
     end
-    def fetch_number_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_number_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "Number")
       provider
-        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
         .value
     rescue StandardError
       default_value
@@ -151,9 +159,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(Integer)
     end
-    def fetch_integer_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_integer_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "Integer")
       provider
-        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
         .value
         .to_i
     rescue StandardError
@@ -168,9 +179,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(Float)
     end
-    def fetch_float_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_float_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "Float")
       provider
-        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .resolve_number_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
         .value
         .to_f
     rescue StandardError
@@ -185,9 +199,12 @@ module OpenFeature
         options: T.nilable(EvaluationOptions)
       ).returns(Structure)
     end
-    def fetch_structure_value(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_structure_value(flag_key:, default_value:, context: nil, options: nil)
+      evaluated_context = build_context_with_before_hooks(flag_key: flag_key, default_value: default_value,
+                                                          invocation_context: context, options: options,
+                                                          flag_type: "Structure")
       provider
-        .resolve_structure_value(flag_key: flag_key, default_value: default_value, context: build_context(context))
+        .resolve_structure_value(flag_key: flag_key, default_value: default_value, context: evaluated_context)
         .value
     rescue StandardError
       default_value
@@ -217,6 +234,47 @@ module OpenFeature
 
     sig { returns(Provider) }
     attr_reader :provider
+
+    sig do
+      type_parameters(:U).params(
+        flag_key: String,
+        default_value: T.type_parameter(:U),
+        invocation_context: T.nilable(EvaluationContext),
+        options: T.nilable(EvaluationOptions),
+        flag_type: String
+      ).returns(EvaluationContext)
+    end
+    def build_context_with_before_hooks(flag_key:, default_value:, invocation_context:, options:, flag_type:)
+      hook_context = build_hook_context(flag_key: flag_key, default_value: default_value,
+                                        invocation_context: invocation_context, flag_type: flag_type)
+      OpenFeature::Hook::BeforeHook.call(hooks: build_hooks(options), context: hook_context,
+                                         hints: {})
+    end
+
+    sig { params(options: T.nilable(EvaluationOptions)).returns(Hooks) }
+    def build_hooks(options)
+      Hooks.new(
+        global: OpenFeature.configuration.hooks,
+        client: hooks,
+        invocation: (options ? options.hooks : []),
+        provider: provider.hooks
+      )
+    end
+
+    sig do
+      type_parameters(:U).params(
+        flag_key: String,
+        default_value: T.type_parameter(:U),
+        invocation_context: T.nilable(EvaluationContext),
+        flag_type: String
+      ).returns(HookContext[T.type_parameter(:U)])
+    end
+    def build_hook_context(flag_key:, default_value:, invocation_context:, flag_type:)
+      evaluation_context = build_context(invocation_context) || OpenFeature::EvaluationContext.new
+      HookContext.new(flag_key: flag_key, default_value: default_value,
+                      evaluation_context: evaluation_context, flag_type: flag_type,
+                      client_metadata: client_metadata, provider_metadata: provider.metadata)
+    end
 
     sig { params(invocation_context: T.nilable(EvaluationContext)).returns(T.nilable(EvaluationContext)) }
     def build_context(invocation_context)
