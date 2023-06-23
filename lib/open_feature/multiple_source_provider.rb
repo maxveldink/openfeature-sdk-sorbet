@@ -26,6 +26,11 @@ module OpenFeature
       providers.flat_map(&:hooks)
     end
 
+    sig { override.void }
+    def shutdown
+      providers.each(&:shutdown)
+    end
+
     sig do
       override
         .params(

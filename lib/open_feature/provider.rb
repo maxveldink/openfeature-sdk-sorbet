@@ -14,6 +14,9 @@ module OpenFeature
     sig { abstract.returns(T::Array[Hook]) }
     def hooks; end
 
+    sig { overridable.void }
+    def shutdown; end
+
     sig do
       abstract
         .params(

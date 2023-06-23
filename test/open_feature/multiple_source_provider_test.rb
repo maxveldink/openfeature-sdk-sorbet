@@ -32,7 +32,7 @@ class MultipleSourceProviderTest < Minitest::Test
     )
   end
 
-  def test_metadata_combins_all_providers
+  def test_metadata_combines_all_providers
     assert_equal("Multiple Sources: Test Provider, No Op Provider", @first_provider_returns.metadata.name)
   end
 
