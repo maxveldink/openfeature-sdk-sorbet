@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require_relative "../support/test_provider"
 
 class MultipleSourceProviderTest < Minitest::Test
   def setup
@@ -32,12 +31,27 @@ class MultipleSourceProviderTest < Minitest::Test
     )
   end
 
-  def test_metadata_combins_all_providers
+  def test_metadata_combines_all_providers
     assert_equal("Multiple Sources: Test Provider, No Op Provider", @first_provider_returns.metadata.name)
   end
 
   def test_hooks_combine_all_providers
     assert_equal(1, @first_provider_returns.hooks.size)
+  end
+
+  def test_shutdown_can_be_called
+    Counter.instance.intialize
+
+    OpenFeature::MultipleSourceProvider.new(
+      providers: [
+        TestProvider.new(counter: Counter.instance),
+        TestProvider.new(counter: Counter.instance)
+      ]
+    ).shutdown
+
+    assert_equal(2, Counter.instance.shutdown_calls)
+
+    Counter.instance.reset!
   end
 
   def test_boolean_value_returns_from_first_provider

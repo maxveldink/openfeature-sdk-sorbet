@@ -2,8 +2,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require_relative "support/test_provider"
-require_relative "support/test_hook"
 
 class OpenFeatureTest < Minitest::Test
   def teardown
@@ -18,6 +16,17 @@ class OpenFeatureTest < Minitest::Test
     OpenFeature.set_provider(TestProvider.new)
 
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
+  end
+
+  def test_shutdown_calls_provider_shutdown
+    Counter.instance.intialize
+    OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
+
+    OpenFeature.shutdown
+
+    assert_equal(1, Counter.instance.shutdown_calls)
+
+    Counter.instance.reset!
   end
 
   def test_evaluation_context_can_be_set

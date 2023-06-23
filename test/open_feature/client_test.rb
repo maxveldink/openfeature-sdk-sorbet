@@ -2,8 +2,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require_relative "../support/test_provider"
-require_relative "../support/test_hook"
 
 class ClientTest < Minitest::Test
   def setup

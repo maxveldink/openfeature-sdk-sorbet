@@ -3,16 +3,19 @@
 
 module OpenFeature
   # Interface that providers must implement.
-  module Provider
+  class Provider
     extend T::Sig
     extend T::Helpers
-    interface!
+    abstract!
 
     sig { abstract.returns(ProviderMetadata) }
     def metadata; end
 
     sig { abstract.returns(T::Array[Hook]) }
     def hooks; end
+
+    sig { overridable.void }
+    def shutdown; end
 
     sig do
       abstract

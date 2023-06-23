@@ -53,7 +53,7 @@ The OpenFeature specification defines [Structure as a potential return type](htt
 
 We support global evaluation context (set on the `OpenFeature` module), client evaluation context (set on client instances or during client initialization) and invocation evaluation context (passed in during flag evaluation). In compliance with the specification, the invocation context merges into the client context which merges into the global context. Fields in invocation context take precedence over fields in the client context which take precedence over fields in the global context.
 
-### Provider Interface
+### Provider Abstract Class
 
 By default, this implementation sets the provider to the `OpenFeature::NoOpProvider` which always returns the default value. It's up to the individual teams to define their own providers based on their flag source (in the future, I'll release open-source providers based on various, common vendors).
 
@@ -72,13 +72,21 @@ OpenFeature.set_provider(provider)
 
 #### Implementing Custom Providers
 
-Thanks to Sorbet interfaces, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
+Thanks to Sorbet abstract classes, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
 
 ```ruby
-class JsonFileFlagProvider
+class JsonFileFlagProvider < OpenFeature::Provider
   extend T::Sig
 
-  include OpenFeature::Provider
+  sig { void }
+  def initialize
+    @file = File.open("../my_flags.json")
+  end
+
+  sig { overridable.void }
+  def shutdown
+    @file.close
+  end
 
   sig { override.returns(OpenFeature::ProviderMetadata) }
   def metadata
@@ -113,7 +121,7 @@ class JsonFileFlagProvider
 end
 ```
 
-By including the `OpenFeature::Provider` module, Sorbet will indicate what methods it's expecting and what their type signatures should be.
+By inheriting from the `OpenFeature::Provider` class, Sorbet will indicate what methods it's expecting and what their type signatures should be.
 
 ## Development
 

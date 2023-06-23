@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `OpenFeature::Provider#shutdown` as an overridable method on `Provider`s that can perform any cleanup work for the given provider. This method has a `void` return type and the default implementation is a no-op.
+- Added `OpenFeature.shutdown` to invoke the current provider's `shutdown` method.
+
+### Changed
+
+- *Breaking* `OpenFeature::Provider` changed from a module interface to an abstract class to support default method implementations.
+
 ## [0.2.0] - 2023-05-17
 
 ### Added

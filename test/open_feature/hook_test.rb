@@ -1,9 +1,6 @@
 # typed: false
 # frozen_string_literal: true
 
-require_relative "../support/test_provider"
-require_relative "../support/test_hook"
-
 class HookTest < Minitest::Test
   # See Requirement 4.3.4
   def test_single_before_hook_is_called_and_updates_evaluation_context

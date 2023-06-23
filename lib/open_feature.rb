@@ -48,6 +48,11 @@ module OpenFeature
       )
     end
 
+    sig { void }
+    def shutdown
+      configuration.provider.shutdown
+    end
+
     sig { returns(Configuration) }
     def configuration
       Configuration.instance
