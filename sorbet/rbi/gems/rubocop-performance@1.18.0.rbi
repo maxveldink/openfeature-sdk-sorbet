@@ -580,55 +580,62 @@ RuboCop::Cop::Performance::CollectionLiteralInLoop::POST_CONDITION_LOOP_TYPES = 
 
 # Identifies places where `sort { |a, b| a.foo <=> b.foo }`
 # can be replaced by `sort_by(&:foo)`.
-# This cop also checks `max` and `min` methods.
+# This cop also checks `sort!`, `min`, `max` and `minmax` methods.
 #
 # @example
 #   # bad
-#   array.sort { |a, b| a.foo <=> b.foo }
-#   array.max { |a, b| a.foo <=> b.foo }
-#   array.min { |a, b| a.foo <=> b.foo }
-#   array.sort { |a, b| a[:foo] <=> b[:foo] }
+#   array.sort   { |a, b| a.foo <=> b.foo }
+#   array.sort!  { |a, b| a.foo <=> b.foo }
+#   array.max    { |a, b| a.foo <=> b.foo }
+#   array.min    { |a, b| a.foo <=> b.foo }
+#   array.minmax { |a, b| a.foo <=> b.foo }
+#   array.sort   { |a, b| a[:foo] <=> b[:foo] }
 #
 #   # good
 #   array.sort_by(&:foo)
+#   array.sort_by!(&:foo)
 #   array.sort_by { |v| v.foo }
 #   array.sort_by do |var|
 #   var.foo
 #   end
 #   array.max_by(&:foo)
 #   array.min_by(&:foo)
+#   array.minmax_by(&:foo)
 #   array.sort_by { |a| a[:foo] }
 #
-# source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#26
+# source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#30
 class RuboCop::Cop::Performance::CompareWithBlock < ::RuboCop::Cop::Base
   include ::RuboCop::Cop::RangeHelp
   extend ::RuboCop::Cop::AutoCorrector
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#34
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#41
   def compare?(param0 = T.unsafe(nil)); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#48
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#55
   def on_block(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#41
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#48
   def replaceable_body?(param0 = T.unsafe(nil), param1, param2); end
 
   private
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#105
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#114
   def compare_range(send, node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#84
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#91
   def message(send, method, var_a, var_b, args); end
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#69
+  # source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#76
   def slow_compare?(method, args_a, args_b); end
 end
 
-# source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#30
+# source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#34
 RuboCop::Cop::Performance::CompareWithBlock::MSG = T.let(T.unsafe(nil), String)
+
+# source://rubocop-performance//lib/rubocop/cop/performance/compare_with_block.rb#38
+RuboCop::Cop::Performance::CompareWithBlock::REPLACEMENT = T.let(T.unsafe(nil), Hash)
 
 # Identifies places where `Concurrent.monotonic_time`
 # can be replaced by `Process.clock_gettime(Process::CLOCK_MONOTONIC)`.
@@ -692,23 +699,28 @@ RuboCop::Cop::Performance::ConcurrentMonotonicTime::RESTRICT_ON_SEND = T.let(T.u
 class RuboCop::Cop::Performance::ConstantRegexp < ::RuboCop::Cop::Base
   extend ::RuboCop::Cop::AutoCorrector
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#41
+  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#45
   def on_regexp(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#55
+  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#59
   def regexp_escape?(param0 = T.unsafe(nil)); end
 
   private
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#60
+  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#64
   def include_interpolated_const?(node); end
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#51
+  # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#55
   def within_allowed_assignment?(node); end
+
+  class << self
+    # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#41
+    def autocorrect_incompatible_with; end
+  end
 end
 
 # source://rubocop-performance//lib/rubocop/cop/performance/constant_regexp.rb#39
@@ -2132,10 +2144,10 @@ class RuboCop::Cop::Performance::RegexpMatch < ::RuboCop::Cop::Base
   # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#105
   def match_with_lvasgn?(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#138
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#142
   def on_case(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#134
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#138
   def on_if(node); end
 
   # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#123
@@ -2143,56 +2155,61 @@ class RuboCop::Cop::Performance::RegexpMatch < ::RuboCop::Cop::Base
 
   private
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#161
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#165
   def autocorrect(corrector, node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#150
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#154
   def check_condition(cond); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#246
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#250
   def correct_operator(corrector, recv, arg, oper = T.unsafe(nil)); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#271
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#275
   def correction_range(recv, arg); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#217
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#221
   def find_last_match(body, range, scope_root); end
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#177
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#181
   def last_match_used?(match_node); end
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#242
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#246
   def match_gvar?(sym); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#173
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#177
   def message(node); end
 
   # @return [Boolean]
   #
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#213
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#217
   def modifier_form?(match_node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#199
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#203
   def next_match_pos(body, match_node_pos, scope_root); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#186
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#190
   def range_to_search_for_last_matches(match_node, body, scope_root); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#255
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#259
   def replace_with_match_predicate_method(corrector, recv, arg, op_range); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#224
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#228
   def scope_body(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#236
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#240
   def scope_root(node); end
 
-  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#266
+  # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#270
   def swap_receiver_and_arg(corrector, recv, arg); end
+
+  class << self
+    # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#134
+    def autocorrect_incompatible_with; end
+  end
 end
 
 # source://rubocop-performance//lib/rubocop/cop/performance/regexp_match.rb#112
