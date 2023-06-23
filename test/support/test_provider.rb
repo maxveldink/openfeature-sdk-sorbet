@@ -3,13 +3,12 @@
 
 require "open_feature"
 
-class TestProvider
-  include OpenFeature::Provider
-
+class TestProvider < OpenFeature::Provider
   def initialize(raising: false, erroring: false, number_value: 2.4)
     @raising = raising
     @erroring = erroring
     @number_value = number_value
+    super()
   end
 
   def metadata

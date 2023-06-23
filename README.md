@@ -72,13 +72,11 @@ OpenFeature.set_provider(provider)
 
 #### Implementing Custom Providers
 
-Thanks to Sorbet interfaces, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
+Thanks to Sorbet abstract classes, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
 
 ```ruby
-class JsonFileFlagProvider
+class JsonFileFlagProvider < OpenFeature::Provider
   extend T::Sig
-
-  include OpenFeature::Provider
 
   sig { override.returns(OpenFeature::ProviderMetadata) }
   def metadata
@@ -113,7 +111,7 @@ class JsonFileFlagProvider
 end
 ```
 
-By including the `OpenFeature::Provider` module, Sorbet will indicate what methods it's expecting and what their type signatures should be.
+By inheriting from the `OpenFeature::Provider` class, Sorbet will indicate what methods it's expecting and what their type signatures should be.
 
 ## Development
 

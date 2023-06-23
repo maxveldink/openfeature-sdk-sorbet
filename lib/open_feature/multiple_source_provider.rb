@@ -7,14 +7,13 @@ module OpenFeature
   # The providers will be evaluated in that order and the first
   # non-error result will be used. If all sources return an error
   # then the default value is used.
-  class MultipleSourceProvider
+  class MultipleSourceProvider < Provider
     extend T::Sig
-
-    include Provider
 
     sig { params(providers: T::Array[Provider]).void }
     def initialize(providers:)
       @providers = providers
+      super()
     end
 
     sig { override.returns(ProviderMetadata) }
