@@ -4,10 +4,13 @@
 require "open_feature"
 
 class TestProvider < OpenFeature::Provider
-  def initialize(raising: false, erroring: false, number_value: 2.4)
+  attr_reader :counter
+
+  def initialize(raising: false, erroring: false, number_value: 2.4, counter: nil)
     @raising = raising
     @erroring = erroring
     @number_value = number_value
+    @counter = counter
     super()
   end
 
@@ -17,6 +20,10 @@ class TestProvider < OpenFeature::Provider
 
   def hooks
     [TestHook.new]
+  end
+
+  def shutdown
+    @counter.shutdown_calls += 1
   end
 
   def resolve_boolean_value(**_)

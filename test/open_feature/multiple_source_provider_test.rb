@@ -39,6 +39,21 @@ class MultipleSourceProviderTest < Minitest::Test
     assert_equal(1, @first_provider_returns.hooks.size)
   end
 
+  def test_shutdown_can_be_called
+    Counter.instance.intialize
+
+    OpenFeature::MultipleSourceProvider.new(
+      providers: [
+        TestProvider.new(counter: Counter.instance),
+        TestProvider.new(counter: Counter.instance)
+      ]
+    ).shutdown
+
+    assert_equal(2, Counter.instance.shutdown_calls)
+
+    Counter.instance.reset!
+  end
+
   def test_boolean_value_returns_from_first_provider
     expected_details = OpenFeature::ResolutionDetails.new(value: true, reason: "STATIC")
 
