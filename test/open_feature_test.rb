@@ -18,6 +18,17 @@ class OpenFeatureTest < Minitest::Test
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
   end
 
+  def test_shutdown_calls_provider_shutdown
+    Counter.instance.intialize
+    OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
+
+    OpenFeature.shutdown
+
+    assert_equal(1, Counter.instance.shutdown_calls)
+
+    Counter.instance.reset!
+  end
+
   def test_evaluation_context_can_be_set
     OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new)
 
