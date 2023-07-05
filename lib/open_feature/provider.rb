@@ -12,7 +12,7 @@ module OpenFeature
     attr_reader :status
 
     sig { params(status: ProviderStatus).void }
-    def initialize(status)
+    def initialize(status = ProviderStatus::Ready)
       @status = status
     end
 

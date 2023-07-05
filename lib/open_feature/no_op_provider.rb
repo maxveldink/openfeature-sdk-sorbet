@@ -18,7 +18,7 @@ module OpenFeature
     def initialize
       @metadata = T.let(ProviderMetadata.new(name: "No Op Provider"), ProviderMetadata)
       @hooks = T.let([], T::Array[Hook])
-      super(ProviderStatus::Ready)
+      super()
     end
 
     sig do
