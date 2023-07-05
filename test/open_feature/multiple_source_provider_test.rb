@@ -31,8 +31,8 @@ class MultipleSourceProviderTest < Minitest::Test
     )
   end
 
-  def test_sets_status_to_ready
-    assert_equal(OpenFeature::ProviderStatus::Ready, @first_provider_returns.status)
+  def test_sets_status_to_not_ready_in_initilaize
+    assert_equal(OpenFeature::ProviderStatus::NotReady, @first_provider_returns.status)
   end
 
   def test_metadata_combines_all_providers
@@ -41,6 +41,18 @@ class MultipleSourceProviderTest < Minitest::Test
 
   def test_hooks_combine_all_providers
     assert_equal(1, @first_provider_returns.hooks.size)
+  end
+
+  def test_init_sets_status_to_ready_if_all_inits_were_called_successfully
+    @first_provider_returns.init(context: OpenFeature::EvaluationContext.new)
+
+    assert_equal(@first_provider_returns.status, OpenFeature::ProviderStatus::Ready)
+  end
+
+  def test_init_sets_status_to_error_if_error_is_thrown_by_provider
+    @provider_raises.init(context: OpenFeature::EvaluationContext.new)
+
+    assert_equal(@provider_raises.status, OpenFeature::ProviderStatus::Error)
   end
 
   def test_shutdown_can_be_called

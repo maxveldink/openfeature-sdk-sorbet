@@ -13,7 +13,7 @@ module OpenFeature
     sig { params(providers: T::Array[Provider]).void }
     def initialize(providers:)
       @providers = providers
-      super(ProviderStatus::Ready)
+      super(ProviderStatus::NotReady)
     end
 
     sig { override.returns(ProviderMetadata) }
@@ -24,6 +24,14 @@ module OpenFeature
     sig { override.returns(T::Array[Hook]) }
     def hooks
       providers.flat_map(&:hooks)
+    end
+
+    sig { override.params(context: EvaluationContext).void }
+    def init(context:)
+      providers.each { |provider| provider.init(context: context) }
+      @status = ProviderStatus::Ready
+    rescue StandardError
+      @status = ProviderStatus::Error
     end
 
     sig { override.void }

@@ -16,6 +16,9 @@ module OpenFeature
       @status = status
     end
 
+    sig { overridable.params(context: EvaluationContext).void }
+    def init(context:); end
+
     sig { abstract.returns(ProviderMetadata) }
     def metadata; end
 
