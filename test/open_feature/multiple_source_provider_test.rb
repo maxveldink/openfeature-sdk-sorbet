@@ -31,6 +31,10 @@ class MultipleSourceProviderTest < Minitest::Test
     )
   end
 
+  def test_sets_status_to_ready
+    assert_equal(OpenFeature::ProviderStatus::Ready, @first_provider_returns.status)
+  end
+
   def test_metadata_combines_all_providers
     assert_equal("Multiple Sources: Test Provider, No Op Provider", @first_provider_returns.metadata.name)
   end

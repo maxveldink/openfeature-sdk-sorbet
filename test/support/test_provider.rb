@@ -11,7 +11,7 @@ class TestProvider < OpenFeature::Provider
     @erroring = erroring
     @number_value = number_value
     @counter = counter
-    super()
+    super(OpenFeature::ProviderStatus::Ready)
   end
 
   def metadata

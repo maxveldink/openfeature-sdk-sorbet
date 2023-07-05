@@ -13,7 +13,7 @@ module OpenFeature
     sig { params(providers: T::Array[Provider]).void }
     def initialize(providers:)
       @providers = providers
-      super()
+      super(ProviderStatus::Ready)
     end
 
     sig { override.returns(ProviderMetadata) }

@@ -8,6 +8,14 @@ module OpenFeature
     extend T::Helpers
     abstract!
 
+    sig { returns(ProviderStatus) }
+    attr_reader :status
+
+    sig { params(status: ProviderStatus).void }
+    def initialize(status)
+      @status = status
+    end
+
     sig { abstract.returns(ProviderMetadata) }
     def metadata; end
 
