@@ -11,7 +11,7 @@ class TestProvider < OpenFeature::Provider
     @erroring = erroring
     @number_value = number_value
     @counter = counter
-    super()
+    super(OpenFeature::ProviderStatus::Ready)
   end
 
   def metadata
@@ -20,6 +20,11 @@ class TestProvider < OpenFeature::Provider
 
   def hooks
     [TestHook.new]
+  end
+
+  def init(context:) # rubocop:disable Lint/UnusedMethodArgument
+    @status = OpenFeature::ProviderStatus::Error if @erroring || @raising
+    @counter.init_calls += 1
   end
 
   def shutdown

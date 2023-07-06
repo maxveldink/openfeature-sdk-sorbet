@@ -8,6 +8,10 @@ class NoOpProviderTest < Minitest::Test
     @provider = OpenFeature::NoOpProvider.new
   end
 
+  def test_sets_status_to_ready
+    assert_equal(OpenFeature::ProviderStatus::Ready, @provider.status)
+  end
+
   def test_returns_name_in_metadata
     assert_equal("No Op Provider", @provider.metadata.name)
   end

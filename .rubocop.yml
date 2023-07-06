@@ -25,6 +25,7 @@ Lint/UnusedMethodArgument:
 Metrics/ClassLength:
   Exclude:
     - lib/open_feature/client.rb
+    - lib/open_feature/multiple_source_provider.rb
     - test/open_feature/client_test.rb
     - test/open_feature/multiple_source_provider_test.rb
 

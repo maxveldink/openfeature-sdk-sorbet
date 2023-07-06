@@ -19,6 +19,8 @@ module OpenFeature
 
     sig { params(provider: Provider).void }
     def set_provider(provider) # rubocop:disable Naming/AccessorMethodName
+      configuration.provider.shutdown
+      provider.init(context: configuration.evaluation_context || EvaluationContext.new)
       configuration.provider = provider
     end
 

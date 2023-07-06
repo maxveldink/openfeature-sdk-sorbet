@@ -13,7 +13,7 @@ group :development do
   gem "rubocop-rake"
   gem "rubocop-sorbet"
   gem "sorbet"
-  gem "spoom"
+  gem "spoom", "1.2.1" # remove once we go to Ruby 3+
   gem "tapioca", require: false
 end
 
