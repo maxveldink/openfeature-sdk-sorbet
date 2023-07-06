@@ -14196,6 +14196,13 @@ class RuboCop::Cop::Layout::SpaceAfterComma < ::RuboCop::Cop::Base
 
   # source://rubocop//lib/rubocop/cop/layout/space_after_comma.rb#21
   def space_style_before_rcurly; end
+
+  private
+
+  # @return [Boolean]
+  #
+  # source://rubocop//lib/rubocop/cop/layout/space_after_comma.rb#32
+  def before_semicolon?(token); end
 end
 
 # Checks for space between a method name and a left parenthesis in defs.
@@ -21615,6 +21622,14 @@ RuboCop::Cop::Lint::RedundantDirGlobSort::RESTRICT_ON_SEND = T.let(T.unsafe(nil)
 
 # Checks for redundant quantifiers inside Regexp literals.
 #
+# It is always allowed when interpolation is used in a regexp literal,
+# because it's unknown what kind of string will be expanded as a result:
+#
+# [source,ruby]
+# ----
+# /(?:a*#{interpolation})?/x
+# ----
+#
 # @example
 #   # bad
 #   /(?:x+)+/
@@ -21634,48 +21649,48 @@ RuboCop::Cop::Lint::RedundantDirGlobSort::RESTRICT_ON_SEND = T.let(T.unsafe(nil)
 #   # good
 #   /(?:x*)/
 #
-# source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#26
+# source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#34
 class RuboCop::Cop::Lint::RedundantRegexpQuantifiers < ::RuboCop::Cop::Base
   include ::RuboCop::Cop::RangeHelp
   extend ::RuboCop::Cop::AutoCorrector
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#34
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#42
   def on_regexp(node); end
 
   private
 
   # @return [Boolean]
   #
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#73
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#83
   def character_set?(expr); end
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#51
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#61
   def each_redundantly_quantified_pair(node); end
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#77
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#87
   def mergeable_quantifier(expr); end
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#93
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#103
   def merged_quantifier(exp1, exp2); end
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#109
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#119
   def message(group, child, replacement); end
 
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#105
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#115
   def quantifier_range(group, child); end
 
   # @return [Boolean]
   #
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#65
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#75
   def redundant_group?(expr); end
 
   # @return [Boolean]
   #
-  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#69
+  # source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#79
   def redundantly_quantifiable?(node); end
 end
 
-# source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#30
+# source://rubocop//lib/rubocop/cop/lint/redundant_regexp_quantifiers.rb#38
 RuboCop::Cop::Lint::RedundantRegexpQuantifiers::MSG_REDUNDANT_QUANTIFIER = T.let(T.unsafe(nil), String)
 
 # Checks for unnecessary `require` statement.
@@ -45014,19 +45029,22 @@ class RuboCop::Cop::Style::RedundantRegexpArgument < ::RuboCop::Cop::Base
   extend ::RuboCop::Cop::AutoCorrector
 
   # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#47
+  def on_csend(node); end
+
+  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#47
   def on_send(node); end
 
   private
 
   # @return [Boolean]
   #
-  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#63
+  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#64
   def determinist_regexp?(regexp_node); end
 
-  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#67
+  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#68
   def preferred_argument(regexp_node); end
 
-  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#80
+  # source://rubocop//lib/rubocop/cop/style/redundant_regexp_argument.rb#81
   def replacement(regexp_node); end
 end
 
@@ -51481,7 +51499,10 @@ class RuboCop::Cop::VariableForce::Assignment
 
   private
 
-  # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#120
+  # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#127
+  def find_multiple_assignment_node(grandparent_node); end
+
+  # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#121
   def for_assignment_node; end
 
   # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#104
@@ -51490,7 +51511,7 @@ class RuboCop::Cop::VariableForce::Assignment
   # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#96
   def operator_assignment_node; end
 
-  # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#113
+  # source://rubocop//lib/rubocop/cop/variable_force/assignment.rb#114
   def rest_assignment_node; end
 end
 
