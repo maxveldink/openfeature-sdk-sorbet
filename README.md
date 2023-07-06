@@ -80,7 +80,12 @@ class JsonFileFlagProvider < OpenFeature::Provider
 
   sig { void }
   def initialize
-    @file = File.open("../my_flags.json")
+    super(OpenFeature::ProviderStatus::NotReady)
+  end
+
+  def init(context)
+    @file = File.open(context.file || "flags.json")
+    @status = OpenFeature::ProviderStatus::Ready
   end
 
   sig { overridable.void }
@@ -122,6 +127,10 @@ end
 ```
 
 By inheriting from the `OpenFeature::Provider` class, Sorbet will indicate what methods it's expecting and what their type signatures should be.
+
+##### A note on `initialize` versus `init`
+
+The Ruby `initialize` method is the best place to do any direct construction logic for an object, such as setting configuration values. `init` is called by OpenFeature when setting a provider and is the best place to make any HTTP requests, establish persistent connections, or any other connection logic that could potentially fail. By the end of this method, `@status` must be set to either `Ready` or `Error`.
 
 ## Development
 
