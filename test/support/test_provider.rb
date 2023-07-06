@@ -23,7 +23,8 @@ class TestProvider < OpenFeature::Provider
   end
 
   def init(context:) # rubocop:disable Lint/UnusedMethodArgument
-    raise "Provider could not be initialized" if @erroring || @raising
+    @status = OpenFeature::ProviderStatus::Error if @erroring || @raising
+    @counter.init_calls += 1
   end
 
   def shutdown

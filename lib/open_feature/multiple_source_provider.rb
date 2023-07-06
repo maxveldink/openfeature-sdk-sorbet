@@ -29,7 +29,11 @@ module OpenFeature
     sig { override.params(context: EvaluationContext).void }
     def init(context:)
       providers.each { |provider| provider.init(context: context) }
-      @status = ProviderStatus::Ready
+      @status = if providers.all? { |provider| provider.status == ProviderStatus::Ready }
+                  ProviderStatus::Ready
+                else
+                  ProviderStatus::Error
+                end
     rescue StandardError
       @status = ProviderStatus::Error
     end

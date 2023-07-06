@@ -4,8 +4,13 @@
 require "test_helper"
 
 class OpenFeatureTest < Minitest::Test
+  def setup
+    Counter.instance.intialize
+  end
+
   def teardown
     OpenFeature.configuration.reset!
+    Counter.instance.reset!
   end
 
   def test_returns_provider_metadata
@@ -13,20 +18,26 @@ class OpenFeatureTest < Minitest::Test
   end
 
   def test_provider_can_be_set
-    OpenFeature.set_provider(TestProvider.new)
+    OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
 
     assert_equal("Test Provider", OpenFeature.provider_metadata.name)
+    assert_equal(1, Counter.instance.init_calls)
+  end
+
+  def test_set_provider_shuts_down_current_provider_and_initializes_new_one
+    OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
+    OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
+
+    assert_equal(2, Counter.instance.init_calls)
+    assert_equal(1, Counter.instance.shutdown_calls)
   end
 
   def test_shutdown_calls_provider_shutdown
-    Counter.instance.intialize
     OpenFeature.set_provider(TestProvider.new(counter: Counter.instance))
 
     OpenFeature.shutdown
 
     assert_equal(1, Counter.instance.shutdown_calls)
-
-    Counter.instance.reset!
   end
 
   def test_evaluation_context_can_be_set

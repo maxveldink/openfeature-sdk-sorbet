@@ -44,9 +44,16 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_init_sets_status_to_ready_if_all_inits_were_called_successfully
-    @first_provider_returns.init(context: OpenFeature::EvaluationContext.new)
+    provider = OpenFeature::MultipleSourceProvider.new(
+      providers: [
+        OpenFeature::NoOpProvider.new,
+        OpenFeature::NoOpProvider.new
+      ]
+    )
 
-    assert_equal(@first_provider_returns.status, OpenFeature::ProviderStatus::Ready)
+    provider.init(context: OpenFeature::EvaluationContext.new)
+
+    assert_equal(provider.status, OpenFeature::ProviderStatus::Ready)
   end
 
   def test_init_sets_status_to_error_if_error_is_thrown_by_provider
