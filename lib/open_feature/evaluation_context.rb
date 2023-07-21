@@ -11,22 +11,20 @@ module OpenFeature
 
     include T::Struct::ActsAsComparable
 
-    FieldValueType = T.type_alias { T.any(T::Boolean, String, Numeric, DateTime, Structure) }
-
-    const :targeting_key, T.nilable(String)
-    const :fields, T::Hash[String, FieldValueType], default: {}
+    const :targeting_key, T.nilable(String), default: nil
+    const :fields, T::Hash[T.untyped, T.untyped], default: {}
 
     sig { params(method_name: Symbol).returns(T::Boolean) }
     def respond_to_missing?(method_name)
       fields.key?(method_name.to_s)
     end
 
-    sig { params(method_name: Symbol).returns(T.nilable(FieldValueType)) }
+    sig { params(method_name: Symbol).returns(T.untyped) }
     def method_missing(method_name)
       fields.fetch(method_name.to_s, nil)
     end
 
-    sig { params(key: String, value: FieldValueType).returns(EvaluationContext) }
+    sig { params(key: T.untyped, value: T.untyped).returns(EvaluationContext) }
     def add_field(key, value)
       EvaluationContext.new(
         targeting_key: targeting_key,
@@ -34,7 +32,7 @@ module OpenFeature
       )
     end
 
-    sig { returns(T::Hash[String, FieldValueType]) }
+    sig { returns(T::Hash[T.untyped, T.untyped]) }
     def to_h
       targeting_key.nil? ? fields : fields.merge("targeting_key" => targeting_key)
     end
