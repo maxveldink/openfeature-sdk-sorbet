@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0.1] - 2023-07-21
+
+### Changed
+
+* Loosened the type for the `EvaluationContext` underlying Hash to `T::Hash[T.untyped, T.untyped]`. This allows for more varied context to be past to flag evaluation. This is necessary since we don't fully support the Hooks specification and cannot handle all flag evaluation use cases. This behavior will be reverted once the Hooks spec is fully implemented.
+
 ## [0.2.0] - 2023-05-17
 
 ### Added
