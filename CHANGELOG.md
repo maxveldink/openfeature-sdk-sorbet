@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0.2] - 2023-07-27
+
+### Fixed
+
+- Fixed an issue where the `OpenFeature::MultipleSourceProvider` did not properly pass evaluation context to the internal providers.
+
 ## [0.2.0.1] - 2023-07-21
 
 ### Changed
