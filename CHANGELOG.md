@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- *Breaking* Changed minimum supported Ruby version to 3.1.
 - *Breaking* `OpenFeature::Provider` changed from a module interface to an abstract class to support default method implementations.
 - *Breaking* `OpenFeature::Provider.initialize` now must accept an `OpenFeature::ProviderStatus`. Any providers may pass this in during initialization. If you need to do additional setup in `Provider.init`, we recommend you pass `OpenFeature::ProviderStatus::NotReady` here.
 

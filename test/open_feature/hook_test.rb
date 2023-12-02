@@ -25,7 +25,7 @@ class HookTest < Minitest::Test
     hints = { "xhint" => "yvalue" }
     hook.mock.expect(:call, hook_return_context, [[hook_context, hints]])
     OpenFeature::Hook::BeforeHook.call(hooks: OpenFeature::Hooks.new(invocation: [hook]), context: hook_context,
-                                       hints: hints)
+                                       hints:)
     hook.mock.verify
   end
 
@@ -42,7 +42,7 @@ class HookTest < Minitest::Test
       hook.mock.expect(:call, OpenFeature::EvaluationContext.new(targeting_key: index.to_s), [[last_context, {}]])
     end
 
-    result = OpenFeature::Hook::BeforeHook.call(hooks: hooks, context: initial_hook_context, hints: {})
+    result = OpenFeature::Hook::BeforeHook.call(hooks:, context: initial_hook_context, hints: {})
 
     assert_equal(result, OpenFeature::EvaluationContext.new(targeting_key: (hooks.before.length - 1).to_s))
   end
@@ -54,8 +54,8 @@ class HookTest < Minitest::Test
     OpenFeature::HookContext.new(flag_key: "test",
                                  flag_type: "String",
                                  evaluation_context: OpenFeature::EvaluationContext.new(
-                                   targeting_key: targeting_key,
-                                   fields: fields
+                                   targeting_key:,
+                                   fields:
                                  ),
                                  default_value: "",
                                  client_metadata: OpenFeature::ClientMetadata.new,

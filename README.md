@@ -5,7 +5,7 @@
 If an organization is not already using Sorbet, you probably don't want to introduce a dependency on `sorbet-runtime`, which this gem does. As such, this will always be a distinct implementation, separate from the official [Ruby SDK](https://github.com/open-feature/ruby-sdk).
 
 Current OpenFeature specification target version: `0.5.2`
-Current supported Ruby versions: `2.7.X`, `3.0.X`, `3.1.X`, `3.2.X`
+Current supported Ruby versions: `3.1.X`, `3.2.X`
 Support for Evaluation Context and Hooks is not complete.
 
 ## Installation

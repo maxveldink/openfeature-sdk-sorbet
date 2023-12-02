@@ -44,8 +44,8 @@ module OpenFeature
     def create_client(name: nil, evaluation_context: nil, hooks: nil)
       Client.new(
         provider: configuration.provider,
-        name: name,
-        evaluation_context: evaluation_context,
+        name:,
+        evaluation_context:,
         hooks: Array(hooks)
       )
     end
