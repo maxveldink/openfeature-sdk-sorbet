@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Sorbet-aware implemention of the OpenFeature specification"
   spec.homepage = "https://github.com/maxveldink/openfeature-sdk-sorbet"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.7"
+  spec.required_ruby_version = ">= 3.1"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   spec.metadata["rubygems_mfa_required"] = "true"

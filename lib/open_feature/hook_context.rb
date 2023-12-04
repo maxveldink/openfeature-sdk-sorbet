@@ -22,9 +22,9 @@ module OpenFeature
     # Needed as opposed to .with due to https://sorbet.org/docs/tstruct#from_hash-gotchas
     sig { params(new_context: EvaluationContext).returns(HookContext[Value]) }
     def with_new_evaluation_context(new_context)
-      OpenFeature::HookContext.new(flag_key: flag_key, flag_type: flag_type, default_value: default_value,
-                                   evaluation_context: new_context, client_metadata: client_metadata,
-                                   provider_metadata: provider_metadata)
+      OpenFeature::HookContext.new(flag_key:, flag_type:, default_value:,
+                                   evaluation_context: new_context, client_metadata:,
+                                   provider_metadata:)
     end
   end
 end
