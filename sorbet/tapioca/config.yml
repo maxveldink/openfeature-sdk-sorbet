@@ -1,4 +1,6 @@
 gem:
   workers: 5
+  exclude:
+    - rdoc
 dsl:
   workers: 5
