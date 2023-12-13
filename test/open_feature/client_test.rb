@@ -45,6 +45,12 @@ class ClientTest < Minitest::Test
     assert(result)
   end
 
+  def test_fetch_boolean_value_returns_without_default_value_present
+    result = @client.fetch_boolean_value(flag_key: "testing")
+
+    assert(result)
+  end
+
   def test_fetch_boolean_value_returns_default_if_provider_raises
     result = @raising_client.fetch_boolean_value(flag_key: "testing", default_value: false)
 

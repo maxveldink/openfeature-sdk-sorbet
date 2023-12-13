@@ -38,12 +38,12 @@ module OpenFeature
     sig do
       params(
         flag_key: String,
-        default_value: T::Boolean,
+        default_value: T.nilable(T::Boolean),
         context: T.nilable(EvaluationContext),
         options: T.nilable(EvaluationOptions)
       ).returns(T::Boolean)
     end
-    def fetch_boolean_value(flag_key:, default_value:, context: nil, options: nil)
+    def fetch_boolean_value(flag_key:, default_value: false, context: nil, options: nil)
       evaluated_context = build_context_with_before_hooks(flag_key:, default_value:,
                                                           invocation_context: context, options:,
                                                           flag_type: "Boolean")
@@ -56,12 +56,12 @@ module OpenFeature
     sig do
       params(
         flag_key: String,
-        default_value: T::Boolean,
+        default_value: T.nilable(T::Boolean),
         context: T.nilable(EvaluationContext),
         options: T.nilable(EvaluationOptions)
       ).returns(EvaluationDetails[T::Boolean])
     end
-    def fetch_boolean_details(flag_key:, default_value:, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+    def fetch_boolean_details(flag_key:, default_value: false, context: nil, options: nil) # rubocop:disable Lint/UnusedMethodArgument
       details = provider.resolve_boolean_value(
         flag_key:,
         default_value:,
