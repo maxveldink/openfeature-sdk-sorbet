@@ -54,7 +54,7 @@ module OpenFeature
     end
     def resolve_boolean_value(flag_key:, default_value:, context: nil)
       resolve_from_sources(default_value:) do |provider|
-        provider.resolve_boolean_value(flag_key:, default_value:)
+        provider.resolve_boolean_value(flag_key:, default_value:, context:)
       end
     end
 
@@ -69,7 +69,7 @@ module OpenFeature
     end
     def resolve_number_value(flag_key:, default_value:, context: nil)
       resolve_from_sources(default_value:) do |provider|
-        provider.resolve_number_value(flag_key:, default_value:)
+        provider.resolve_number_value(flag_key:, default_value:, context:)
       end
     end
 
@@ -84,7 +84,7 @@ module OpenFeature
     end
     def resolve_structure_value(flag_key:, default_value:, context: nil)
       resolve_from_sources(default_value:) do |provider|
-        provider.resolve_structure_value(flag_key:, default_value:)
+        provider.resolve_structure_value(flag_key:, default_value:, context:)
       end
     end
 
@@ -99,7 +99,7 @@ module OpenFeature
     end
     def resolve_string_value(flag_key:, default_value:, context: nil)
       resolve_from_sources(default_value:) do |provider|
-        provider.resolve_string_value(flag_key:, default_value:)
+        provider.resolve_string_value(flag_key:, default_value:, context:)
       end
     end
 
