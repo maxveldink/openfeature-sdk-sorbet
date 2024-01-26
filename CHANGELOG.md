@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2024-01-26
+
+### Changed
+
+- Loosened underlying `Hash` type for evaluation context.
+
+### Fixed
+
+- Fixed issue where `MultipleSourceProvider` was not passing context to each internal provider.
+
 ## [0.3.0] - 2024-01-24
 
 ### Added
