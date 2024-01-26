@@ -25,12 +25,12 @@ module OpenFeature
       override
         .params(
           flag_key: String,
-          default_value: T::Boolean,
+          default_value: T.nilable(T::Boolean),
           context: T.nilable(EvaluationContext)
         )
         .returns(ResolutionDetails[T::Boolean])
     end
-    def resolve_boolean_value(flag_key:, default_value:, context: nil)
+    def resolve_boolean_value(flag_key:, default_value: false, context: nil)
       ResolutionDetails.new(value: default_value, reason: "DEFAULT")
     end
 
