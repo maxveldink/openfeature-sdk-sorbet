@@ -28,7 +28,7 @@ module OpenFeature
 
     sig { override.params(context: EvaluationContext).void }
     def init(context:)
-      providers.each { |provider| provider.init(context:) }
+      providers.each { |provider| provider.init(context: context) }
       @status = if providers.all? { |provider| provider.status == ProviderStatus::Ready }
                   ProviderStatus::Ready
                 else
@@ -53,8 +53,8 @@ module OpenFeature
         .returns(ResolutionDetails[T::Boolean])
     end
     def resolve_boolean_value(flag_key:, default_value:, context: nil)
-      resolve_from_sources(default_value:) do |provider|
-        provider.resolve_boolean_value(flag_key:, default_value:, context:)
+      resolve_from_sources(default_value: default_value) do |provider|
+        provider.resolve_boolean_value(flag_key: flag_key, default_value: default_value, context: context)
       end
     end
 
@@ -68,8 +68,8 @@ module OpenFeature
         .returns(ResolutionDetails[Numeric])
     end
     def resolve_number_value(flag_key:, default_value:, context: nil)
-      resolve_from_sources(default_value:) do |provider|
-        provider.resolve_number_value(flag_key:, default_value:, context:)
+      resolve_from_sources(default_value: default_value) do |provider|
+        provider.resolve_number_value(flag_key: flag_key, default_value: default_value, context: context)
       end
     end
 
@@ -83,8 +83,8 @@ module OpenFeature
         .returns(ResolutionDetails[Structure])
     end
     def resolve_structure_value(flag_key:, default_value:, context: nil)
-      resolve_from_sources(default_value:) do |provider|
-        provider.resolve_structure_value(flag_key:, default_value:, context:)
+      resolve_from_sources(default_value: default_value) do |provider|
+        provider.resolve_structure_value(flag_key: flag_key, default_value: default_value, context: context)
       end
     end
 
@@ -98,8 +98,8 @@ module OpenFeature
         .returns(ResolutionDetails[String])
     end
     def resolve_string_value(flag_key:, default_value:, context: nil)
-      resolve_from_sources(default_value:) do |provider|
-        provider.resolve_string_value(flag_key:, default_value:, context:)
+      resolve_from_sources(default_value: default_value) do |provider|
+        provider.resolve_string_value(flag_key: flag_key, default_value: default_value, context: context)
       end
     end
 

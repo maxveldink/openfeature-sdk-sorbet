@@ -25,7 +25,7 @@ module OpenFeature
       sig { params(details: ResolutionDetails[SelfValue], flag_key: String).returns(EvaluationDetails[SelfValue]) }
       def from_resolution_details(details, flag_key:)
         EvaluationDetails.new(
-          flag_key:,
+          flag_key: flag_key,
           value: details.value,
           error_code: details.error_code,
           error_message: details.error_message,
@@ -44,7 +44,7 @@ module OpenFeature
       end
       def from_error(error_message, flag_key:, default_value:)
         EvaluationDetails.new(
-          flag_key:,
+          flag_key: flag_key,
           value: default_value,
           error_code: ErrorCode::General,
           error_message: "Provider raised error: #{error_message}",

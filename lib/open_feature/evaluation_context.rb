@@ -27,7 +27,7 @@ module OpenFeature
     sig { params(key: String, value: T.untyped).returns(EvaluationContext) }
     def add_field(key, value)
       EvaluationContext.new(
-        targeting_key:,
+        targeting_key: targeting_key,
         fields: fields.merge({ key => value })
       )
     end

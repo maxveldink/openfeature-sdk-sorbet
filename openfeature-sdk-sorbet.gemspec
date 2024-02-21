@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |spec|
   spec.name = "openfeature-sdk-sorbet"
-  spec.version = "0.3.1"
+  spec.version = "0.4.0"
   spec.authors = ["Max VelDink"]
   spec.email = ["maxveldink@gmail.com"]
 
   spec.summary = "Sorbet-aware implemention of the OpenFeature specification"
   spec.homepage = "https://github.com/maxveldink/openfeature-sdk-sorbet"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1"
+  spec.required_ruby_version = ">= 3.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   spec.metadata["rubygems_mfa_required"] = "true"
