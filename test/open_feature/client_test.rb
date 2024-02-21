@@ -280,9 +280,9 @@ class ClientTest < Minitest::Test
 
   def build_test_hook_context(flag_type:, default_value:)
     OpenFeature::HookContext.new(flag_key: "testing",
-                                 flag_type:,
+                                 flag_type: flag_type,
                                  evaluation_context: OpenFeature::EvaluationContext.new,
-                                 default_value:,
+                                 default_value: default_value,
                                  client_metadata: @client.client_metadata,
                                  provider_metadata: @client_provider.metadata)
   end

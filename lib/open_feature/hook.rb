@@ -35,7 +35,7 @@ module OpenFeature
             hooks.before.reduce(context.evaluation_context) do |evaluation_context, hook|
               hook.call(
                 context: context.with_new_evaluation_context(evaluation_context),
-                hints:
+                hints: hints
               )
             end
           )

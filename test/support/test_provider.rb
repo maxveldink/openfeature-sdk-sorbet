@@ -59,9 +59,9 @@ class TestProvider < OpenFeature::Provider
 
   def build_details(value)
     if @erroring
-      OpenFeature::ResolutionDetails.new(value:, error_code: OpenFeature::ErrorCode::General, reason: "ERROR")
+      OpenFeature::ResolutionDetails.new(value: value, error_code: OpenFeature::ErrorCode::General, reason: "ERROR")
     else
-      OpenFeature::ResolutionDetails.new(value:, reason: "STATIC")
+      OpenFeature::ResolutionDetails.new(value: value, reason: "STATIC")
     end
   end
 end
