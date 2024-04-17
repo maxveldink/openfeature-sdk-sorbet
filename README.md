@@ -1,5 +1,7 @@
 # Sorbet-aware OpenFeature Ruby Implementation
 
+**NOTE** This implementation has been deprecated in favor of the [official Ruby SDK](https://github.com/open-feature/ruby-sdk). We recommend switching to that. In the future, we hope to add RBS and Tapioca DSL generation support to the official library.
+
 [OpenFeature](https://openfeature.dev) is an open standard for vendor-agnostic feature flagging. [Sorbet](https://sorbet.org) is a type-checker for Ruby, built by Stripe. Sorbet provides powerful runtime utilities to achieve things traditionally not possible with Ruby, such as interfaces, immutable structures and enums. This makes it a very good option when defining specifications.
 
 If an organization is not already using Sorbet, you probably don't want to introduce a dependency on `sorbet-runtime`, which this gem does. As such, this will always be a distinct implementation, separate from the official [Ruby SDK](https://github.com/open-feature/ruby-sdk).
