@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Possible error codes
   class ErrorCode < T::Enum
     enums do

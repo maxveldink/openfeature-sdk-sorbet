@@ -1,9 +1,9 @@
 # typed: false
 # frozen_string_literal: true
 
-require "open_feature"
+require "open_feature_sorbet"
 
-class TestHook < OpenFeature::Hook::BeforeHook
+class TestHook < OpenFeatureSorbet::Hook::BeforeHook
   extend T::Sig
 
   # rubocop: disable Lint/MissingSuper
@@ -13,7 +13,7 @@ class TestHook < OpenFeature::Hook::BeforeHook
   # rubocop:enable Lint/MissingSuper
 
   def call(context:, hints:)
-    mock ? mock.call([context, hints]) : OpenFeature::EvaluationContext.new(targeting_key: nil)
+    mock ? mock.call([context, hints]) : OpenFeatureSorbet::EvaluationContext.new(targeting_key: nil)
   end
 
   attr_reader :mock

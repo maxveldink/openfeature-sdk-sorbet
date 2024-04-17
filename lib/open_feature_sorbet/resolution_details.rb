@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Information about resolved value, created by a Provider.
   class ResolutionDetails < T::Struct
     extend T::Generic

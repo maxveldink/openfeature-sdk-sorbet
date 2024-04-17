@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Represents full set of hooks with helper methods for filtering and sequencing each subtype
   class Hooks < T::Struct
     extend T::Generic

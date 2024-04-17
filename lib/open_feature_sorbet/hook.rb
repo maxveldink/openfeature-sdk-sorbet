@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # See https://openfeature.dev/specification/sections/hooks
   # We model Hooks as a simple ADT
   module Hook
@@ -15,11 +15,11 @@ module OpenFeature
       include Hook
       extend T::Sig
       extend T::Helpers
-      include OpenFeature::Hook
+      include OpenFeatureSorbet::Hook
       abstract!
       sig do
-        abstract.params(context: OpenFeature::HookContext[T.untyped],
-                        hints: T::Hash[String, T.untyped]).returns(OpenFeature::EvaluationContext)
+        abstract.params(context: OpenFeatureSorbet::HookContext[T.untyped],
+                        hints: T::Hash[String, T.untyped]).returns(OpenFeatureSorbet::EvaluationContext)
       end
       def call(context:, hints:); end
 
@@ -27,8 +27,8 @@ module OpenFeature
         extend T::Sig
 
         sig do
-          params(hooks: Hooks, context: OpenFeature::HookContext[T.untyped],
-                 hints: T::Hash[String, T.untyped]).returns(OpenFeature::EvaluationContext)
+          params(hooks: Hooks, context: OpenFeatureSorbet::HookContext[T.untyped],
+                 hints: T::Hash[String, T.untyped]).returns(OpenFeatureSorbet::EvaluationContext)
         end
         def call(hooks:, context:, hints:)
           context.evaluation_context.merge(

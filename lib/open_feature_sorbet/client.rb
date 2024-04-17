@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Used during runtime for evaluating features.
   class Client
     extend T::Sig
@@ -247,14 +247,14 @@ module OpenFeature
     def build_context_with_before_hooks(flag_key:, default_value:, invocation_context:, options:, flag_type:)
       hook_context = build_hook_context(flag_key: flag_key, default_value: default_value,
                                         invocation_context: invocation_context, flag_type: flag_type)
-      OpenFeature::Hook::BeforeHook.call(hooks: build_hooks(options), context: hook_context,
-                                         hints: {})
+      OpenFeatureSorbet::Hook::BeforeHook.call(hooks: build_hooks(options), context: hook_context,
+                                               hints: {})
     end
 
     sig { params(options: T.nilable(EvaluationOptions)).returns(Hooks) }
     def build_hooks(options)
       Hooks.new(
-        global: OpenFeature.configuration.hooks,
+        global: OpenFeatureSorbet.configuration.hooks,
         client: hooks,
         invocation: (options ? options.hooks : []),
         provider: provider.hooks
@@ -270,7 +270,7 @@ module OpenFeature
       ).returns(HookContext[T.type_parameter(:U)])
     end
     def build_hook_context(flag_key:, default_value:, invocation_context:, flag_type:)
-      evaluation_context = build_context(invocation_context) || OpenFeature::EvaluationContext.new
+      evaluation_context = build_context(invocation_context) || OpenFeatureSorbet::EvaluationContext.new
       HookContext.new(flag_key: flag_key, default_value: default_value,
                       evaluation_context: evaluation_context, flag_type: flag_type,
                       client_metadata: client_metadata, provider_metadata: provider.metadata)
@@ -279,7 +279,7 @@ module OpenFeature
     sig { params(invocation_context: T.nilable(EvaluationContext)).returns(T.nilable(EvaluationContext)) }
     def build_context(invocation_context)
       EvaluationContextBuilder.new.call(
-        global_context: OpenFeature.configuration.evaluation_context,
+        global_context: OpenFeatureSorbet.configuration.evaluation_context,
         client_context: evaluation_context,
         invocation_context: invocation_context
       )

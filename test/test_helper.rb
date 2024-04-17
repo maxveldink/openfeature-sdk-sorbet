@@ -3,6 +3,6 @@
 
 require "minitest/autorun"
 require "debug"
-require "open_feature"
+require "open_feature_sorbet"
 
 Dir["#{__dir__}/support/**/*.rb"].each { |file| require file }

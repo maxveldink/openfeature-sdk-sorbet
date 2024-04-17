@@ -3,7 +3,7 @@
 
 require "date"
 
-module OpenFeature
+module OpenFeatureSorbet
   # Provides ambient information for the purposes of flag evaluation.
   # Currently does not meet specification!
   class EvaluationContext < T::Struct

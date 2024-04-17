@@ -5,10 +5,11 @@ require "test_helper"
 
 class EvaluationContextBuilderTest < Minitest::Test
   def setup
-    @builder = OpenFeature::EvaluationContextBuilder.new
-    @global_context = OpenFeature::EvaluationContext.new(targeting_key: "global", fields: { "global" => "key" })
-    @client_context = OpenFeature::EvaluationContext.new(targeting_key: "client", fields: { "client" => "key" })
-    @invocation_context = OpenFeature::EvaluationContext.new(targeting_key: "invocation", fields: { "invoke" => "key" })
+    @builder = OpenFeatureSorbet::EvaluationContextBuilder.new
+    @global_context = OpenFeatureSorbet::EvaluationContext.new(targeting_key: "global", fields: { "global" => "key" })
+    @client_context = OpenFeatureSorbet::EvaluationContext.new(targeting_key: "client", fields: { "client" => "key" })
+    @invocation_context = OpenFeatureSorbet::EvaluationContext.new(targeting_key: "invocation",
+                                                                   fields: { "invoke" => "key" })
   end
 
   def test_no_available_contexts_returns_nil
@@ -21,7 +22,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     result = @builder.call(global_context: @global_context, client_context: nil, invocation_context: nil)
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "global",
         fields: { "global" => "key" }
       ),
@@ -33,7 +34,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     result = @builder.call(global_context: nil, client_context: @client_context, invocation_context: nil)
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "client",
         fields: { "client" => "key" }
       ),
@@ -45,7 +46,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     result = @builder.call(global_context: nil, client_context: nil, invocation_context: @invocation_context)
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "invocation",
         fields: { "invoke" => "key" }
       ),
@@ -57,7 +58,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     result = @builder.call(global_context: @global_context, client_context: @client_context, invocation_context: nil)
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "client",
         fields: { "global" => "key", "client" => "key" }
       ),
@@ -73,7 +74,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     )
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "invocation",
         fields: { "client" => "key", "invoke" => "key" }
       ),
@@ -89,7 +90,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     )
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "invocation",
         fields: { "global" => "key", "invoke" => "key" }
       ),
@@ -105,7 +106,7 @@ class EvaluationContextBuilderTest < Minitest::Test
     )
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "invocation",
         fields: { "global" => "key", "client" => "key", "invoke" => "key" }
       ),

@@ -3,7 +3,7 @@
 
 require "singleton"
 
-module OpenFeature
+module OpenFeatureSorbet
   # Singleton class that supports global configuration for OpenFeature.
   # Should not be interacted with directly; rather, favor interacting
   # with methods defined on the `OpenFeature` module.
@@ -35,7 +35,7 @@ module OpenFeature
 
     sig { void }
     def reset!
-      @provider = OpenFeature::NoOpProvider.new
+      @provider = OpenFeatureSorbet::NoOpProvider.new
       @hooks = []
       @evaluation_context = nil
     end

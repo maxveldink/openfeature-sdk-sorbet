@@ -1,9 +1,9 @@
 # typed: true
 # frozen_string_literal: true
 
-require "open_feature"
+require "open_feature_sorbet"
 
-class TestProvider < OpenFeature::Provider
+class TestProvider < OpenFeatureSorbet::Provider
   attr_reader :counter
 
   def initialize(raising: false, erroring: false, number_value: 2.4, counter: nil)
@@ -11,11 +11,11 @@ class TestProvider < OpenFeature::Provider
     @erroring = erroring
     @number_value = number_value
     @counter = counter
-    super(OpenFeature::ProviderStatus::Ready)
+    super(OpenFeatureSorbet::ProviderStatus::Ready)
   end
 
   def metadata
-    OpenFeature::ProviderMetadata.new(name: "Test Provider")
+    OpenFeatureSorbet::ProviderMetadata.new(name: "Test Provider")
   end
 
   def hooks
@@ -23,7 +23,7 @@ class TestProvider < OpenFeature::Provider
   end
 
   def init(context:) # rubocop:disable Lint/UnusedMethodArgument
-    @status = OpenFeature::ProviderStatus::Error if @erroring || @raising
+    @status = OpenFeatureSorbet::ProviderStatus::Error if @erroring || @raising
     @counter.init_calls += 1
   end
 
@@ -59,9 +59,10 @@ class TestProvider < OpenFeature::Provider
 
   def build_details(value)
     if @erroring
-      OpenFeature::ResolutionDetails.new(value: value, error_code: OpenFeature::ErrorCode::General, reason: "ERROR")
+      OpenFeatureSorbet::ResolutionDetails.new(value: value, error_code: OpenFeatureSorbet::ErrorCode::General,
+                                               reason: "ERROR")
     else
-      OpenFeature::ResolutionDetails.new(value: value, reason: "STATIC")
+      OpenFeatureSorbet::ResolutionDetails.new(value: value, reason: "STATIC")
     end
   end
 end

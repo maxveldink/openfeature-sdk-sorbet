@@ -5,25 +5,25 @@ require "test_helper"
 
 class MultipleSourceProviderTest < Minitest::Test
   def setup
-    @first_provider_returns = OpenFeature::MultipleSourceProvider.new(
+    @first_provider_returns = OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
         TestProvider.new,
-        OpenFeature::NoOpProvider.new
+        OpenFeatureSorbet::NoOpProvider.new
       ]
     )
-    @second_provider_returns = OpenFeature::MultipleSourceProvider.new(
+    @second_provider_returns = OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
         TestProvider.new(erroring: true),
         TestProvider.new
       ]
     )
-    @no_providers_return = OpenFeature::MultipleSourceProvider.new(
+    @no_providers_return = OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
         TestProvider.new(erroring: true),
         TestProvider.new(erroring: true)
       ]
     )
-    @provider_raises = OpenFeature::MultipleSourceProvider.new(
+    @provider_raises = OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
         TestProvider.new(erroring: true),
         TestProvider.new(raising: true)
@@ -32,7 +32,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_sets_status_to_not_ready_in_initilaize
-    assert_equal(OpenFeature::ProviderStatus::NotReady, @first_provider_returns.status)
+    assert_equal(OpenFeatureSorbet::ProviderStatus::NotReady, @first_provider_returns.status)
   end
 
   def test_metadata_combines_all_providers
@@ -44,28 +44,28 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_init_sets_status_to_ready_if_all_inits_were_called_successfully
-    provider = OpenFeature::MultipleSourceProvider.new(
+    provider = OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
-        OpenFeature::NoOpProvider.new,
-        OpenFeature::NoOpProvider.new
+        OpenFeatureSorbet::NoOpProvider.new,
+        OpenFeatureSorbet::NoOpProvider.new
       ]
     )
 
-    provider.init(context: OpenFeature::EvaluationContext.new)
+    provider.init(context: OpenFeatureSorbet::EvaluationContext.new)
 
-    assert_equal(provider.status, OpenFeature::ProviderStatus::Ready)
+    assert_equal(provider.status, OpenFeatureSorbet::ProviderStatus::Ready)
   end
 
   def test_init_sets_status_to_error_if_error_is_thrown_by_provider
-    @provider_raises.init(context: OpenFeature::EvaluationContext.new)
+    @provider_raises.init(context: OpenFeatureSorbet::EvaluationContext.new)
 
-    assert_equal(@provider_raises.status, OpenFeature::ProviderStatus::Error)
+    assert_equal(@provider_raises.status, OpenFeatureSorbet::ProviderStatus::Error)
   end
 
   def test_shutdown_can_be_called
     Counter.instance.intialize
 
-    OpenFeature::MultipleSourceProvider.new(
+    OpenFeatureSorbet::MultipleSourceProvider.new(
       providers: [
         TestProvider.new(counter: Counter.instance),
         TestProvider.new(counter: Counter.instance)
@@ -78,7 +78,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_boolean_value_returns_from_first_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: true, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: true, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -87,7 +87,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_boolean_value_returns_from_second_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: true, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: true, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -96,9 +96,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_boolean_value_returns_default_when_all_providers_error
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: false,
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -109,9 +109,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_boolean_value_returns_default_when_a_provider_raises
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: false,
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -122,7 +122,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_string_value_returns_from_first_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: "testing", reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: "testing", reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -131,7 +131,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_string_value_returns_from_second_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: "testing", reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: "testing", reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -140,9 +140,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_string_value_returns_default_when_all_providers_error
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: "fallback",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -153,9 +153,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_string_value_returns_when_a_provider_raises
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: "fallback",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -166,7 +166,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_number_value_returns_from_first_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: 2.4, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: 2.4, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -175,7 +175,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_number_value_returns_from_second_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: 2.4, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: 2.4, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -184,9 +184,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_number_value_returns_default_when_all_providers_error
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: 3,
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -197,9 +197,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_number_value_returns_when_a_provider_raises
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: 3,
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -210,7 +210,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_structure_value_returns_from_first_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: { "testing" => "123" }, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: { "testing" => "123" }, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -219,7 +219,7 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_structure_value_returns_from_second_provider
-    expected_details = OpenFeature::ResolutionDetails.new(value: { "testing" => "123" }, reason: "STATIC")
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(value: { "testing" => "123" }, reason: "STATIC")
 
     assert_equal(
       expected_details,
@@ -228,9 +228,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_structure_value_returns_default_when_all_providers_error
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: { "something" => "else" },
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 
@@ -241,9 +241,9 @@ class MultipleSourceProviderTest < Minitest::Test
   end
 
   def test_structure_value_returns_when_a_provider_raises
-    expected_details = OpenFeature::ResolutionDetails.new(
+    expected_details = OpenFeatureSorbet::ResolutionDetails.new(
       value: { "something" => "else" },
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       reason: "ERROR"
     )
 

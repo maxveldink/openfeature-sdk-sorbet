@@ -26,25 +26,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `OpenFeature::Provider#status` reader that returns an `OpenFeature::ProviderStatus`.
-- Added `OpenFeature::Provider#init` as an overridable method on `Provider`s that can perform any initialization work for the given provider. This method accepts the global `EvaluationContext` and has a `void` return type. The default implementation is a no-op.
-- Added `OpenFeature::Provider#shutdown` as an overridable method on `Provider`s that can perform any cleanup work for the given provider. This method has a `void` return type and the default implementation is a no-op.
+- Added `OpenFeatureSorbet::Provider#status` reader that returns an `OpenFeatureSorbet::ProviderStatus`.
+- Added `OpenFeatureSorbet::Provider#init` as an overridable method on `Provider`s that can perform any initialization work for the given provider. This method accepts the global `EvaluationContext` and has a `void` return type. The default implementation is a no-op.
+- Added `OpenFeatureSorbet::Provider#shutdown` as an overridable method on `Provider`s that can perform any cleanup work for the given provider. This method has a `void` return type and the default implementation is a no-op.
 - Added `OpenFeature.shutdown` to invoke the current provider's `shutdown` method.
 
 ### Changed
 
 - *Breaking* Changed minimum supported Ruby version to 3.1.
-- *Breaking* `OpenFeature::Provider` changed from a module interface to an abstract class to support default method implementations.
-- *Breaking* `OpenFeature::Provider.initialize` now must accept an `OpenFeature::ProviderStatus`. Any providers may pass this in during initialization. If you need to do additional setup in `Provider.init`, we recommend you pass `OpenFeature::ProviderStatus::NotReady` here.
+- *Breaking* `OpenFeatureSorbet::Provider` changed from a module interface to an abstract class to support default method implementations.
+- *Breaking* `OpenFeatureSorbet::Provider.initialize` now must accept an `OpenFeatureSorbet::ProviderStatus`. Any providers may pass this in during initialization. If you need to do additional setup in `Provider.init`, we recommend you pass `OpenFeatureSorbet::ProviderStatus::NotReady` here.
 
 ## [0.2.0] - 2023-05-17
 
 ### Added
 
-- Added ability to set evaluation context globally on the `Configuration` singleton, i.e. `OpenFeature::Configuration.instance.evaluation_context = OpenFeature::EvaluationContext.new(fields: { "globally" => "available" })`.
-- Added ability to set evaluation context globally on the `OpenFeature` module, i.e. `OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new(fields: { "globally" => "available" }))`.
-- Added ability to set evaluation context on a `Client` instance, i.e. `client.evaluation_context = OpenFeature::EvaluationContext.new(fields: { "client" => "available" })`.
-- Added ability to set hooks and evaluation context on `Client` initialization, i.e. `OpenFeature.create_client(name: "my_client", evaluation_context: OpenFeature::EvaluationContext.new(fields: { "client" => "available" }), hooks: OpenFeature::Hook.new)`
+- Added ability to set evaluation context globally on the `Configuration` singleton, i.e. `OpenFeatureSorbet::Configuration.instance.evaluation_context = OpenFeatureSorbet::EvaluationContext.new(fields: { "globally" => "available" })`.
+- Added ability to set evaluation context globally on the `OpenFeature` module, i.e. `OpenFeature.set_evaluation_context(OpenFeatureSorbet::EvaluationContext.new(fields: { "globally" => "available" }))`.
+- Added ability to set evaluation context on a `Client` instance, i.e. `client.evaluation_context = OpenFeatureSorbet::EvaluationContext.new(fields: { "client" => "available" })`.
+- Added ability to set hooks and evaluation context on `Client` initialization, i.e. `OpenFeature.create_client(name: "my_client", evaluation_context: OpenFeatureSorbet::EvaluationContext.new(fields: { "client" => "available" }), hooks: OpenFeatureSorbet::Hook.new)`
 - Added `Configuration#reset!` to reset global configuration to the default state.
 
 ### Changed
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Introduced `OpenFeature::MultipleSourceProvider` to allow fetching flags from multiple sources.
+- Introduced `OpenFeatureSorbet::MultipleSourceProvider` to allow fetching flags from multiple sources.
 
 ## [0.1.1] - 2023-05-15
 

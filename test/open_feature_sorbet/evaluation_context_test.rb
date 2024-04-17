@@ -5,10 +5,10 @@ require "test_helper"
 
 class EvaluationContextTest < Minitest::Test
   def setup
-    @evaluation_context_without_targeting_key = OpenFeature::EvaluationContext.new(
+    @evaluation_context_without_targeting_key = OpenFeatureSorbet::EvaluationContext.new(
       fields: { "testing" => "a value", "something" => "different" }
     )
-    @evaluation_context_with_targeting_key = OpenFeature::EvaluationContext.new(
+    @evaluation_context_with_targeting_key = OpenFeatureSorbet::EvaluationContext.new(
       targeting_key: "abc",
       fields: { "testing" => "another value" }
     )
@@ -47,7 +47,7 @@ class EvaluationContextTest < Minitest::Test
     new_context = @evaluation_context_without_targeting_key.merge(@evaluation_context_with_targeting_key)
 
     assert_equal(
-      OpenFeature::EvaluationContext.new(
+      OpenFeatureSorbet::EvaluationContext.new(
         targeting_key: "abc",
         fields: { "testing" => "another value", "something" => "different" }
       ),

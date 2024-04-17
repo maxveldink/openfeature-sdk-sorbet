@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Default provider when initializing OpenFeature.
   # Always returns the default value given.
   # This will result in a TypeError if the given default value does not have the correct type.

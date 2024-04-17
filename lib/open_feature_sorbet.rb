@@ -8,7 +8,7 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 # Sorbet-aware implementation of the OpenFeature specification
-module OpenFeature
+module OpenFeatureSorbet
   class << self
     extend T::Sig
 
