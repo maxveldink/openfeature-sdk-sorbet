@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Used to combine evaluation contexts from different sources
   class EvaluationContextBuilder
     extend T::Sig

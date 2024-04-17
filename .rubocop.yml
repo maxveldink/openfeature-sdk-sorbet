@@ -15,19 +15,19 @@ AllCops:
     - sorbet/**/*.rbi
 
 Layout/LineLength:
-  Max: 120
+  Max: 130
 
 Lint/UnusedMethodArgument:
   Exclude:
-    - lib/open_feature/multiple_source_provider.rb
-    - lib/open_feature/no_op_provider.rb
+    - lib/open_feature_sorbet/multiple_source_provider.rb
+    - lib/open_feature_sorbet/no_op_provider.rb
 
 Metrics/ClassLength:
   Exclude:
-    - lib/open_feature/client.rb
-    - lib/open_feature/multiple_source_provider.rb
-    - test/open_feature/client_test.rb
-    - test/open_feature/multiple_source_provider_test.rb
+    - lib/open_feature_sorbet/client.rb
+    - lib/open_feature_sorbet/multiple_source_provider.rb
+    - test/open_feature_sorbet/client_test.rb
+    - test/open_feature_sorbet/multiple_source_provider_test.rb
 
 Metrics/MethodLength:
   Exclude:

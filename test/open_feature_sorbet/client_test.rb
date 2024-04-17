@@ -6,13 +6,13 @@ require "test_helper"
 class ClientTest < Minitest::Test
   def setup
     @client_provider = TestProvider.new
-    @client = OpenFeature::Client.new(provider: @client_provider, name: "testing")
-    @raising_client = OpenFeature::Client.new(provider: TestProvider.new(raising: true))
-    @integer_client = OpenFeature::Client.new(provider: TestProvider.new(number_value: 2))
+    @client = OpenFeatureSorbet::Client.new(provider: @client_provider, name: "testing")
+    @raising_client = OpenFeatureSorbet::Client.new(provider: TestProvider.new(raising: true))
+    @integer_client = OpenFeatureSorbet::Client.new(provider: TestProvider.new(number_value: 2))
   end
 
   def test_is_initialized_properly_with_defaults
-    client = OpenFeature::Client.new(provider: TestProvider.new)
+    client = OpenFeatureSorbet::Client.new(provider: TestProvider.new)
 
     assert_nil(client.client_metadata.name)
     assert_nil(client.evaluation_context)
@@ -20,10 +20,10 @@ class ClientTest < Minitest::Test
   end
 
   def test_values_can_be_provided_during_initialization
-    client = OpenFeature::Client.new(
+    client = OpenFeatureSorbet::Client.new(
       provider: TestProvider.new,
       name: "testing",
-      evaluation_context: OpenFeature::EvaluationContext.new,
+      evaluation_context: OpenFeatureSorbet::EvaluationContext.new,
       hooks: [TestHook.new]
     )
 
@@ -52,7 +52,7 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_boolean_details_returns_details
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: true,
       reason: "STATIC"
@@ -64,11 +64,11 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_boolean_details_returns_details_when_provider_raises
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: false,
       reason: "ERROR",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       error_message: "Provider raised error: TypeError"
     )
 
@@ -90,7 +90,7 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_string_details_returns_details
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: "testing",
       reason: "STATIC"
@@ -102,11 +102,11 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_string_details_returns_details_when_provider_raises
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: "fallback",
       reason: "ERROR",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       error_message: "Provider raised error: TypeError"
     )
 
@@ -128,7 +128,7 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_number_details_returns_details
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: 2.4,
       reason: "STATIC"
@@ -140,11 +140,11 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_number_details_returns_details_when_provider_raises
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: 3.2,
       reason: "ERROR",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       error_message: "Provider raised error: TypeError"
     )
 
@@ -190,7 +190,7 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_structure_details_returns_details
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: { "testing" => "123" },
       reason: "STATIC"
@@ -202,11 +202,11 @@ class ClientTest < Minitest::Test
   end
 
   def test_fetch_structure_details_returns_details_when_provider_raises
-    expected_details = OpenFeature::EvaluationDetails.new(
+    expected_details = OpenFeatureSorbet::EvaluationDetails.new(
       flag_key: "testing",
       value: { "another" => "test" },
       reason: "ERROR",
-      error_code: OpenFeature::ErrorCode::General,
+      error_code: OpenFeatureSorbet::ErrorCode::General,
       error_message: "Provider raised error: TypeError"
     )
 
@@ -219,7 +219,7 @@ class ClientTest < Minitest::Test
     hook = TestHook.new mock: Minitest::Mock.new
     expected_hook_context = build_test_hook_context(flag_type: "Boolean", default_value: false)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
-    @client.fetch_boolean_value(flag_key: "testing", default_value: false, options: OpenFeature::EvaluationOptions.new(
+    @client.fetch_boolean_value(flag_key: "testing", default_value: false, options: OpenFeatureSorbet::EvaluationOptions.new(
       hooks: [hook]
     ))
     hook.mock.verify
@@ -229,7 +229,7 @@ class ClientTest < Minitest::Test
     hook = TestHook.new mock: Minitest::Mock.new
     expected_hook_context = build_test_hook_context(flag_type: "String", default_value: "foo")
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
-    @client.fetch_string_value(flag_key: "testing", default_value: "foo", options: OpenFeature::EvaluationOptions.new(
+    @client.fetch_string_value(flag_key: "testing", default_value: "foo", options: OpenFeatureSorbet::EvaluationOptions.new(
       hooks: [hook]
     ))
     hook.mock.verify
@@ -239,7 +239,7 @@ class ClientTest < Minitest::Test
     hook = TestHook.new mock: Minitest::Mock.new
     expected_hook_context = build_test_hook_context(flag_type: "Integer", default_value: 43)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
-    @client.fetch_integer_value(flag_key: "testing", default_value: 43, options: OpenFeature::EvaluationOptions.new(
+    @client.fetch_integer_value(flag_key: "testing", default_value: 43, options: OpenFeatureSorbet::EvaluationOptions.new(
       hooks: [hook]
     ))
     hook.mock.verify
@@ -249,7 +249,7 @@ class ClientTest < Minitest::Test
     hook = TestHook.new mock: Minitest::Mock.new
     expected_hook_context = build_test_hook_context(flag_type: "Number", default_value: 3.14)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
-    @client.fetch_number_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+    @client.fetch_number_value(flag_key: "testing", default_value: 3.14, options: OpenFeatureSorbet::EvaluationOptions.new(
       hooks: [hook]
     ))
     hook.mock.verify
@@ -259,7 +259,7 @@ class ClientTest < Minitest::Test
     hook = TestHook.new mock: Minitest::Mock.new
     expected_hook_context = build_test_hook_context(flag_type: "Float", default_value: 3.14)
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
-    @client.fetch_float_value(flag_key: "testing", default_value: 3.14, options: OpenFeature::EvaluationOptions.new(
+    @client.fetch_float_value(flag_key: "testing", default_value: 3.14, options: OpenFeatureSorbet::EvaluationOptions.new(
       hooks: [hook]
     ))
     hook.mock.verify
@@ -270,7 +270,7 @@ class ClientTest < Minitest::Test
     expected_hook_context = build_test_hook_context(flag_type: "Structure", default_value: { "another" => "test" })
     hook.mock.expect(:call, expected_hook_context, [[expected_hook_context, {}]])
     @client.fetch_structure_value(flag_key: "testing", default_value: { "another" => "test" },
-                                  options: OpenFeature::EvaluationOptions.new(
+                                  options: OpenFeatureSorbet::EvaluationOptions.new(
                                     hooks: [hook]
                                   ))
     hook.mock.verify
@@ -279,11 +279,11 @@ class ClientTest < Minitest::Test
   private
 
   def build_test_hook_context(flag_type:, default_value:)
-    OpenFeature::HookContext.new(flag_key: "testing",
-                                 flag_type: flag_type,
-                                 evaluation_context: OpenFeature::EvaluationContext.new,
-                                 default_value: default_value,
-                                 client_metadata: @client.client_metadata,
-                                 provider_metadata: @client_provider.metadata)
+    OpenFeatureSorbet::HookContext.new(flag_key: "testing",
+                                       flag_type: flag_type,
+                                       evaluation_context: OpenFeatureSorbet::EvaluationContext.new,
+                                       default_value: default_value,
+                                       client_metadata: @client.client_metadata,
+                                       provider_metadata: @client_provider.metadata)
   end
 end

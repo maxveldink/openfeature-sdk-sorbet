@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Used to pull from multiple providers.
   # Order of the providers given to initialize matters.
   # The providers will be evaluated in that order and the first

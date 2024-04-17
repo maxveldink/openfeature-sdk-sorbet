@@ -1,5 +1,7 @@
 # Sorbet-aware OpenFeature Ruby Implementation
 
+**NOTE** This implementation has been deprecated in favor of the [official Ruby SDK](https://github.com/open-feature/ruby-sdk). We recommend switching to that. In the future, we hope to add RBS and Tapioca DSL generation support to the official library.
+
 [OpenFeature](https://openfeature.dev) is an open standard for vendor-agnostic feature flagging. [Sorbet](https://sorbet.org) is a type-checker for Ruby, built by Stripe. Sorbet provides powerful runtime utilities to achieve things traditionally not possible with Ruby, such as interfaces, immutable structures and enums. This makes it a very good option when defining specifications.
 
 If an organization is not already using Sorbet, you probably don't want to introduce a dependency on `sorbet-runtime`, which this gem does. As such, this will always be a distinct implementation, separate from the official [Ruby SDK](https://github.com/open-feature/ruby-sdk).
@@ -21,15 +23,15 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ## Usage
 
 ```ruby
-require "open_feature"
+require "open_feature_sorbet"
 
 # Configure global API properties
 
-OpenFeature.set_provider(OpenFeature::NoOpProvider.new)
-OpenFeature.set_evaluation_context(OpenFeature::EvaluationContext.new(fields: { "globally" => "available" }))
-OpenFeature.add_hooks([OpenFeature::Hook.new]) # experimental, not fully supported
+OpenFeature.set_provider(OpenFeatureSorbet::NoOpProvider.new)
+OpenFeature.set_evaluation_context(OpenFeatureSorbet::EvaluationContext.new(fields: { "globally" => "available" }))
+OpenFeature.add_hooks([OpenFeatureSorbet::Hook.new]) # experimental, not fully supported
 
-client = OpenFeature.create_client(evaluation_context: OpenFeature::EvaluationContext.new(fields: { "client" => "available" }))
+client = OpenFeature.create_client(evaluation_context: OpenFeatureSorbet::EvaluationContext.new(fields: { "client" => "available" }))
 
 # Fetch boolean value
 # Also methods available for String, Number, Integer, Float and Structure (Hash)
@@ -39,7 +41,7 @@ bool_value = client.fetch_boolean_value(flag_key: "my_toggle", default_value: fa
 bool_value = client.fetch_boolean_value(flag_key: "my_toggle", default_value: "bad!") # => raises TypeError from Sorbet, invalid default value
 
 # Additional evaluation context can be provided during invocation
-number_value = client.fetch_number_value(flag_key: "my_toggle", default_value: 1, context: OpenFeature::EvaluationContext.new(fields: { "only_this_call_site" => 10 })) # => merges client and global context
+number_value = client.fetch_number_value(flag_key: "my_toggle", default_value: 1, context: OpenFeatureSorbet::EvaluationContext.new(fields: { "only_this_call_site" => 10 })) # => merges client and global context
 
 # Fetch structure evaluation details
 structure_evaluation_details = client.fetch_structure_details(flag_key: "my_structure", default_value: { "a" => "fallback" }) # => EvaluationDetails(value: Hash, flag_key: "my_structure", ...)
@@ -55,15 +57,15 @@ We support global evaluation context (set on the `OpenFeature` module), client e
 
 ### Provider Abstract Class
 
-By default, this implementation sets the provider to the `OpenFeature::NoOpProvider` which always returns the default value. It's up to the individual teams to define their own providers based on their flag source (in the future, I'll release open-source providers based on various, common vendors).
+By default, this implementation sets the provider to the `OpenFeatureSorbet::NoOpProvider` which always returns the default value. It's up to the individual teams to define their own providers based on their flag source (in the future, I'll release open-source providers based on various, common vendors).
 
-This gem also provides `OpenFeature::MultipleSourceProvider` to allow fetching flags from multiple sources. This is especially useful if your existing application has flags spread across bespoke and vendor solutions and you want to unify the evaluation sites. It can be instantiated and configured like so:
+This gem also provides `OpenFeatureSorbet::MultipleSourceProvider` to allow fetching flags from multiple sources. This is especially useful if your existing application has flags spread across bespoke and vendor solutions and you want to unify the evaluation sites. It can be instantiated and configured like so:
 
 ```ruby
-provider = OpenFeature::MultipleSourceProvider.new(
+provider = OpenFeatureSorbet::MultipleSourceProvider.new(
   providers: [
     CustomProvider.new,
-    OpenFeature::NoOpProvider.new
+    OpenFeatureSorbet::NoOpProvider.new
   ]
 )
 
@@ -75,17 +77,17 @@ OpenFeature.set_provider(provider)
 Thanks to Sorbet abstract classes, it's fairly straightforward to implement a new provider. Here is an example for a JSON-based flag format on disk:
 
 ```ruby
-class JsonFileFlagProvider < OpenFeature::Provider
+class JsonFileFlagProvider < OpenFeatureSorbet::Provider
   extend T::Sig
 
   sig { void }
   def initialize
-    super(OpenFeature::ProviderStatus::NotReady)
+    super(OpenFeatureSorbet::ProviderStatus::NotReady)
   end
 
   def init(context)
     @file = File.open(context.file || "flags.json")
-    @status = OpenFeature::ProviderStatus::Ready
+    @status = OpenFeatureSorbet::ProviderStatus::Ready
   end
 
   sig { overridable.void }
@@ -93,9 +95,9 @@ class JsonFileFlagProvider < OpenFeature::Provider
     @file.close
   end
 
-  sig { override.returns(OpenFeature::ProviderMetadata) }
+  sig { override.returns(OpenFeatureSorbet::ProviderMetadata) }
   def metadata
-    OpenFeature::ProviderMetadata.new(name: "Json File Flag Provider")
+    OpenFeatureSorbet::ProviderMetadata.new(name: "Json File Flag Provider")
   end
 
   sig { override.returns(T::Array[Hook]) }
@@ -110,13 +112,13 @@ class JsonFileFlagProvider < OpenFeature::Provider
         default_value: T::Boolean,
         context: T.nilable(EvaluationContext)
       )
-      .returns(OpenFeature::ResolutionDetails[T::Boolean])
+      .returns(OpenFeatureSorbet::ResolutionDetails[T::Boolean])
   end
   def resolve_boolean_value(flag_key:, default_value:, context: nil)
     file_input = JSON.parse(File.read("flags.rb"))
     value = file_input.fetch("flag_key", default_value)
 
-    OpenFeature::ResolutionDetails.new(
+    OpenFeatureSorbet::ResolutionDetails.new(
       value: value,
       # ... other optional fields
     )
@@ -126,7 +128,7 @@ class JsonFileFlagProvider < OpenFeature::Provider
 end
 ```
 
-By inheriting from the `OpenFeature::Provider` class, Sorbet will indicate what methods it's expecting and what their type signatures should be.
+By inheriting from the `OpenFeatureSorbet::Provider` class, Sorbet will indicate what methods it's expecting and what their type signatures should be.
 
 ##### A note on `initialize` versus `init`
 

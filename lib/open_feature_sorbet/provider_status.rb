@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-module OpenFeature
+module OpenFeatureSorbet
   # Indicates what state a provider is in
   class ProviderStatus < T::Enum
     enums do
